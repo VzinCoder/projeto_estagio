@@ -1,11 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:projeto_estagio/utils/db.dart';
+import '../helpers_from_test/initFfiDb.dart';
 
-void initFfiDb() {
-  sqfliteFfiInit();
-  databaseFactory = databaseFactoryFfiNoIsolate;
-}
 void main(){
  initFfiDb();
 
