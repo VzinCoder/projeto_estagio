@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "../my_app_routes.dart";
 
 class PetDetails extends StatelessWidget{
   const PetDetails({super.key});
@@ -23,7 +24,7 @@ class PetDetails extends StatelessWidget{
             padding: EdgeInsets.symmetric(vertical: 20),
             child: ElevatedButton(
               onPressed:(){
-                Navigator.pushNamed(context, "/petVaccines");
+                Navigator.pushNamed(context, MyAppRoutes.petVaccines.routeName);
               } ,
               child: Text("Vacinas")
             ),
@@ -32,7 +33,7 @@ class PetDetails extends StatelessWidget{
             padding: EdgeInsets.symmetric(vertical: 20),
             child: ElevatedButton(
               onPressed:(){
-                Navigator.pushNamed(context, "/petEvents");
+                Navigator.pushNamed(context, MyAppRoutes.petEvents.routeName);
               } ,
               child: Text("Eventos")
             ),

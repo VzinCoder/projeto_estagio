@@ -27,15 +27,15 @@ class MyApp extends StatelessWidget {
           )
         ),
       ),
-      initialRoute: "/petDetails",
+      initialRoute: MyAppRoutes.petDetails.routeName,
       routes: {
-        MyAppRoutes.homePage.name: (BuildContext context)=> HomePage(),
-        MyAppRoutes.addPet.name: (BuildContext context)=> AddPet(),
-        MyAppRoutes.petDetails.name:(BuildContext context)=> PetDetails(),
-        MyAppRoutes.petVaccines.name:(BuildContext context)=> PetVaccines(),
-        MyAppRoutes.addPetVaccine.name:(BuildContext context)=> AddPetVaccine(),
-        MyAppRoutes.petEvents.name:(BuildContext context)=> PetEvents(),
-        MyAppRoutes.addPetEvent.name:(BuildContext context)=> AddPetEvent(),
+        MyAppRoutes.homePage.routeName: (BuildContext context)=> HomePage(),
+        MyAppRoutes.addPet.routeName: (BuildContext context)=> AddPet(),
+        MyAppRoutes.petDetails.routeName:(BuildContext context)=> PetDetails(),
+        MyAppRoutes.petVaccines.routeName:(BuildContext context)=> PetVaccines(),
+        MyAppRoutes.addPetVaccine.routeName:(BuildContext context)=> AddPetVaccine(),
+        MyAppRoutes.petEvents.routeName:(BuildContext context)=> PetEvents(),
+        MyAppRoutes.addPetEvent.routeName:(BuildContext context)=> AddPetEvent(),
       },
     );
   }

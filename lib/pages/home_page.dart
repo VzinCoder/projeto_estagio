@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import "../my_app_routes.dart";
 
 class HomePage extends StatelessWidget{
   const HomePage({super.key});
@@ -18,7 +19,7 @@ class HomePage extends StatelessWidget{
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          Navigator.pushNamed(context, "/addPet");
+          Navigator.pushNamed(context, MyAppRoutes.addPet.routeName);
         },
         child: Icon(
           Icons.add,

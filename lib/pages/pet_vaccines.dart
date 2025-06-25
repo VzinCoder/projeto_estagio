@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import "../my_app_routes.dart";
 
 class PetVaccines extends StatelessWidget{
   const PetVaccines({super.key});
@@ -18,7 +19,7 @@ class PetVaccines extends StatelessWidget{
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          Navigator.pushNamed(context, "/addVaccine");
+          Navigator.pushNamed(context, MyAppRoutes.addPetVaccine.routeName);
         },
         child: Icon(
           Icons.add,
