@@ -3,10 +3,15 @@ import 'package:sqflite/sqflite.dart';
 
 class Db {
   static final Db _instance = Db._create();
-  factory Db() => _instance;
+  factory Db({bool inMemory = false}){
+    _instance._inMemory = inMemory;
+    return _instance;
+  }
+  
   Db._create();
 
   static Database? _database;
+  bool _inMemory = false;
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -15,9 +20,12 @@ class Db {
   }
 
   Future<Database> _initDb() async {
+    if (_inMemory) {
+      return openDatabase(inMemoryDatabasePath, version: 1, onCreate: _onCreate);
+    }
+
     final String dbPath = await getDatabasesPath();
     final String path = join(dbPath, 'pets.db');
-
     return openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
