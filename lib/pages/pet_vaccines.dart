@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_estagio/pages/add_pet_vaccine.dart';
 import '../my_app_routes.dart';
 import '../models/vaccine.dart';
 
@@ -68,7 +69,7 @@ class VaccineList extends StatelessWidget {
           name: vaccine.name,
           dateApplication: '📅 ${vaccine.dateApplication}',
           nextDateApplication: '📅 Próxima: ${vaccine.nextDateApplication}',
-          onEdit: () {},
+          onEdit: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => AddPetVaccine(vaccine: vaccine))),
           onDelete: () {},
         );
       },
