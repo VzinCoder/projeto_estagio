@@ -77,13 +77,15 @@ class Vaccine {
   }
 
   Map<String, dynamic> toMap() {
-    return {
+    Map<String, dynamic> map = {
       'id': id,
       'name': name,
       'dateApplication': dateApplication,
       'nextDateApplication': nextDateApplication,
       'petId': petId,
     };
+    if (id != null) map['id'] = id;
+    return map;
   }
 
   @override
