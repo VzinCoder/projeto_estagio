@@ -1,5 +1,3 @@
-import "dart:typed_data";
-
 import "package:flutter/material.dart";
 import "../custom_widgets/custom_text_form_field.dart";
 import "../utils/db.dart";
@@ -132,14 +130,13 @@ class _AddPetState extends State<AddPet>{
                 ),
                 child: TextButton(
                   onPressed: ()async{
-                    int id;
-                    
-                    if(!isEditing){
-                      id  = await _addPet();
-                    }else{
-                      id = await _updatePet(widget.pet!.id!);
-                    }
 
+                    if(!isEditing){
+                      await _addPet();
+                    }else{
+                      await _updatePet(widget.pet!.id!);
+                    }
+                    
                     Navigator.pushNamed(context, MyAppRoutes.homePage.routeName);
                   },
                   child: Text("Salvar")

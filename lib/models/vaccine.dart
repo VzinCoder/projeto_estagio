@@ -78,7 +78,6 @@ class Vaccine {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
-      'id': id,
       'name': name,
       'application_date': dateApplication,
       'next_dose_date': nextDateApplication,
