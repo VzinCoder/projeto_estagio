@@ -1,3 +1,5 @@
+import "dart:typed_data";
+
 import "package:flutter/material.dart";
 import "../custom_widgets/custom_text_form_field.dart";
 import "../utils/db.dart";
@@ -7,8 +9,10 @@ import "package:sqflite/sqflite.dart";
 import "../my_app_routes.dart";
 
 class AddPet extends StatefulWidget{
-  const AddPet({super.key});
+  final Pet? pet;
 
+  const AddPet({super.key, this.pet});
+  
   @override
   State<AddPet> createState() {
     return _AddPetState();
@@ -16,10 +20,13 @@ class AddPet extends StatefulWidget{
 }
 
 class _AddPetState extends State<AddPet>{
-  final name = TextEditingController();
-  final type = TextEditingController();
-  final breed = TextEditingController();
-  final dateOfBirth = TextEditingController();
+  late final TextEditingController name;
+  late final TextEditingController type;
+  late final TextEditingController breed;
+  late final TextEditingController dateOfBirth;
+
+  late final String pageTitle;
+  late final bool isEditing;
 
   Future<PetRepository> _initRepository()async{
     Db instance = Db();
@@ -61,33 +68,28 @@ class _AddPetState extends State<AddPet>{
     return id;
   }
 
-  Map<String, dynamic>? data;
-  bool _isInit = false;
+  @override
+  void initState() {
+    super.initState();
+    name = TextEditingController(
+      text: widget.pet?.name ?? ""
+    );
+    type = TextEditingController(
+      text: widget.pet?.type ?? ""
+    );
+    breed = TextEditingController(
+      text: widget.pet?.breed ?? ""
+    );
+    dateOfBirth = TextEditingController(
+      text: widget.pet?.dateOfBirth ?? ""
+    );
 
-  Map<String, dynamic>? _receiveData(Object? arguments){
-    if(_isInit) return data;
-
-    data = (arguments != null) ? arguments as Map<String, dynamic>: null;
-
-    if(data == null) return data;
-
-    name.text = data!["name"];
-    type.text = data!["type"];
-    breed.text = data!["breed"];
-    dateOfBirth.text = data!["date_of_birth"];
-
-    _isInit = true;
-    return data;
+    pageTitle = widget.pet != null ? "Editar ${widget.pet!.name}":"Cadastrar novo pet";
+    isEditing = widget.pet != null;
   }
 
   @override
   Widget build(BuildContext context) {
-    var arguments = ModalRoute.of(context)?.settings.arguments;
-    var receivedData = _receiveData(arguments);
-
-    String pageTitle = (receivedData != null) ? "Editar ${receivedData["name"]}":"Cadastrar Novo Pet";
-    bool actionCreate = (receivedData != null)? false:true;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -132,13 +134,13 @@ class _AddPetState extends State<AddPet>{
                   onPressed: ()async{
                     int id;
                     
-                    if(actionCreate){
+                    if(!isEditing){
                       id  = await _addPet();
                     }else{
-                      id = await _updatePet(data!["id"]);
+                      id = await _updatePet(widget.pet!.id!);
                     }
 
-                    if(id != null) Navigator.pushNamed(context, MyAppRoutes.homePage.routeName);
+                    Navigator.pushNamed(context, MyAppRoutes.homePage.routeName);
                   },
                   child: Text("Salvar")
                 )
