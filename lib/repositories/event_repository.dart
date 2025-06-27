@@ -35,6 +35,21 @@ class EventRepository implements IEventRepository {
     if (event.id == null) {
       throw Exception("Cannot update event without ID");
     }
-    return db.update('events', event.toMap(), where: 'id = ?', whereArgs: [event.id]);
+    return db.update(
+      'events',
+      event.toMap(),
+      where: 'id = ?',
+      whereArgs: [event.id],
+    );
+  }
+
+  @override
+  Future<List<Event>> getEventsByPetId(int petId) async {
+    final result = await db.query(
+      'events',
+      where: 'pet_id = ?',
+      whereArgs: [petId],
+    );
+    return result.map((map) => Event.fromMap(map)).toList();
   }
 }
