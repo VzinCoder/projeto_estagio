@@ -18,6 +18,7 @@ class Pet {
 
   Map<String,dynamic> toMap(){
     Map<String, dynamic> map = {
+      'id': id,
       'name': name,
       'type': type,
       'breed': breed,
