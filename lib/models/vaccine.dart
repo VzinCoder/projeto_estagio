@@ -70,9 +70,9 @@ class Vaccine {
     return Vaccine(
       id: map['id'],
       name: map['name'],
-      dateApplication: map['dateApplication'],
-      nextDateApplication: map['nextDateApplication'],
-      petId: map['petId'],
+      dateApplication: map['application_date'],
+      nextDateApplication: map['next_dose_date'],
+      petId: map['animal_id'],
     );
   }
 
