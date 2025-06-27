@@ -6,4 +6,5 @@ abstract class IEventRepository {
   Future<Event?> getEventById(int id);
   Future<int> updateEvent(Event event);
   Future<int> deleteEvent(int id);
+  Future<List<Event>> getEventsByPetId(int petId);
 }
