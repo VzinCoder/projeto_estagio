@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import "package:projeto_estagio/repositories/pet_repository.dart";
+import "package:projeto_estagio/utils/injector.dart";
 import "pages/home_page.dart";
 import "pages/add_pet.dart";
 import "pages/pet_details.dart";
@@ -8,7 +10,9 @@ import "pages/pet_events.dart";
 import "pages/add_pet_event.dart";
 import "my_app_routes.dart";
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await setupLocator();
   runApp(const MyApp());
 }
 
