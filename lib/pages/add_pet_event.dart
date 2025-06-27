@@ -77,7 +77,10 @@ class _AddPetEventState extends State<AddPetEvent> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? 'Editar Evento' : 'Adicionar Evento'),
+        title: Text(
+          isEditing ? 'Editar Evento' : 'Adicionar Evento',
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
       ),
       body: Padding(
@@ -103,6 +106,7 @@ class _AddPetEventState extends State<AddPetEvent> {
                 border: OutlineInputBorder(),
               ),
             ),
+            const SizedBox(height: 20),
             TextField(
               controller: descriptionController,
               decoration: InputDecoration(

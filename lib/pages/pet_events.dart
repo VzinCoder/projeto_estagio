@@ -109,7 +109,11 @@ class EventCardItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(type, style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    type,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   Text(date, overflow: TextOverflow.ellipsis),
                   Text(observation, overflow: TextOverflow.ellipsis),
                 ],
