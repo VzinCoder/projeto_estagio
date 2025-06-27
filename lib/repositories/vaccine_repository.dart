@@ -5,7 +5,7 @@ import "i_vaccine_repository.dart";
 class VaccineRepository implements IVaccineRepository{
   final Database db;
   final String table = "vaccines";
-  VaccineRepository({required this.db});
+  VaccineRepository(this.db);
 
 
   @override
