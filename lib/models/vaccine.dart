@@ -80,9 +80,9 @@ class Vaccine {
     Map<String, dynamic> map = {
       'id': id,
       'name': name,
-      'dateApplication': dateApplication,
-      'nextDateApplication': nextDateApplication,
-      'petId': petId,
+      'application_date': dateApplication,
+      'next_dose_date': nextDateApplication,
+      'animal_id': petId,
     };
     if (id != null) map['id'] = id;
     return map;
