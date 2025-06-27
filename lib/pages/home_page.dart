@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import "package:projeto_estagio/pages/add_pet.dart";
 import "../utils/db.dart";
 import "../repositories/pet_repository.dart";
 import "../models/pet.dart";
@@ -58,7 +59,6 @@ class _HomePageState extends State<HomePage>{
             return ListView.builder(
               padding: EdgeInsets.all(20),
               itemCount: pets.length,
-
               itemBuilder: (constext, index){
                 return Container(
                   margin: EdgeInsets.symmetric(
@@ -84,22 +84,19 @@ class _HomePageState extends State<HomePage>{
                       children: [
                         ElevatedButton(
                           onPressed: (){
-                            Navigator.pushNamed(
+                            Navigator.push(
                               context, 
-                              MyAppRoutes.addPet.routeName,
-                              arguments: pets[index].toMap()
+                              MaterialPageRoute(
+                                builder: (context){return AddPet(pet: pets[index]);}
+                              )
                             );
                           }, 
                           child: Icon(Icons.edit),
                         ),
                         ElevatedButton(
                           onPressed: ()async{
-                            int id = await _deletePet(pets[index].id!);
-                            if(id != null){
-                              setState(() {
-                                
-                              });
-                            }
+                            await _deletePet(pets[index].id!);
+                            setState((){});
                           }, 
                           child: Icon(Icons.delete)
                         )
