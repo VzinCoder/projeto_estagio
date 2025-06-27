@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class CustomTextFormField extends StatelessWidget{
   final String? labelText;
@@ -45,7 +44,6 @@ class CustomTextFormField extends StatelessWidget{
               );
               if(date != null){
                 controller.text = "${date.day.toString().padLeft(2,"0")}/${date.month.toString().padLeft(2,"0")}/${date.year}";
-                print(controller.text);
               }
             },
             icon: Icon(Icons.calendar_today)

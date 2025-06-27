@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           )
         ),
       ),
-      initialRoute: MyAppRoutes.petDetails.routeName,
+      initialRoute: MyAppRoutes.homePage.routeName,
       routes: {
         MyAppRoutes.homePage.routeName: (BuildContext context)=> HomePage(),
         MyAppRoutes.addPet.routeName: (BuildContext context)=> AddPet(),
