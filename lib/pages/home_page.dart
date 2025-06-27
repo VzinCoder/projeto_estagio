@@ -1,40 +1,35 @@
 import 'package:flutter/material.dart';
-import "package:projeto_estagio/pages/add_pet.dart";
-import "../utils/db.dart";
-import "../repositories/pet_repository.dart";
-import "../models/pet.dart";
-import "package:sqflite/sqflite.dart";
-import "../my_app_routes.dart";
+import 'package:projeto_estagio/pages/add_pet.dart';
+import '../utils/db.dart';
+import '../repositories/pet_repository.dart';
+import '../models/pet.dart';
+import 'package:sqflite/sqflite.dart';
+import '../my_app_routes.dart';
+import 'pet_details.dart'; // importe a tela de detalhes
 
-class HomePage extends StatefulWidget{
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() {
-    return _HomePageState();
-  }
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>{
-
+class _HomePageState extends State<HomePage> {
   Future<PetRepository> _initRepository() async {
     Db instance = Db();
     Database database = await instance.database;
-
     PetRepository repository = PetRepository(database);
     return repository;
   }
 
   Future<List<Pet>> _getAllPets() async {
     PetRepository repository = await _initRepository();
-    List<Pet>  petList = await repository.getAllPets();
-    return petList;
+    return await repository.getAllPets();
   }
 
-  Future<int> _deletePet(int id)async{
+  Future<int> _deletePet(int id) async {
     PetRepository repository = await _initRepository();
-    int idRemoved = await repository.deletePet(id);
-    return idRemoved;
+    return await repository.deletePet(id);
   }
 
   @override
@@ -43,88 +38,88 @@ class _HomePageState extends State<HomePage>{
       appBar: AppBar(
         title: Text(
           "Meus Pets",
-          style: TextStyle(
-            color: Colors.white
-          ),
+          style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
       ),
       body: FutureBuilder<List<Pet>>(
-        future: _getAllPets(), 
-        builder: (context, snapshot){
-          
-          if(snapshot.hasData){
+        future: _getAllPets(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
             List<Pet> pets = snapshot.data!;
 
             return ListView.builder(
               padding: EdgeInsets.all(20),
               itemCount: pets.length,
-              itemBuilder: (constext, index){
+              itemBuilder: (context, index) {
+                Pet pet = pets[index];
+
                 return Container(
-                  margin: EdgeInsets.symmetric(
-                    vertical: 15
-                  ),
+                  margin: EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
-                    border: BoxBorder.all(
-                      width: 0.4,
-                      color: Colors.deepPurpleAccent
+                    border: Border.all(
+                      width: 0.5,
+                      color: Colors.deepPurpleAccent,
                     ),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(5)
-                    ),
-                    color: Colors.deepPurple[50]
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.deepPurple[50],
                   ),
                   child: ListTile(
-                    
-                    title: Text(pets[index].name),
-                    subtitle: Text(pets[index].type),
+                    title: Text(pet.name),
+                    subtitle: Text(pet.type),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PetDetails(pet: pet),
+                        ),
+                      );
+                    },
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
-                      spacing: 15,
                       children: [
                         ElevatedButton(
-                          onPressed: (){
+                          onPressed: () {
                             Navigator.push(
-                              context, 
+                              context,
                               MaterialPageRoute(
-                                builder: (context){return AddPet(pet: pets[index]);}
-                              )
+                                builder: (context) => AddPet(pet: pet),
+                              ),
                             );
-                          }, 
+                          },
                           child: Icon(Icons.edit),
                         ),
+                        SizedBox(width: 8),
                         ElevatedButton(
-                          onPressed: ()async{
-                            await _deletePet(pets[index].id!);
-                            setState((){});
-                          }, 
-                          child: Icon(Icons.delete)
-                        )
+                          onPressed: () async {
+                            await _deletePet(pet.id!);
+                            setState(() {});
+                          },
+                          child: Icon(Icons.delete),
+                        ),
                       ],
                     ),
                   ),
                 );
-              }
+              },
             );
-          }else if(snapshot.hasError){
+          } else if (snapshot.hasError) {
             return Center(
-              child:Text("Algo deu errado ao obter a lista de pets"),
+              child: Text("Algo deu errado ao obter a lista de pets"),
             );
-          }else{
+          } else {
             return Center(
-              child:Text("Carregando..."),
+              child: Text("Carregando..."),
             );
           }
-        }
+        },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
+        onPressed: () {
           Navigator.pushNamed(context, MyAppRoutes.addPet.routeName);
         },
-        child: Icon(
-          Icons.add,
-        ),
-      )
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
