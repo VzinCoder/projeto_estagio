@@ -61,24 +61,32 @@ class _AddPetState extends State<AddPet>{
     return id;
   }
 
+  Map<String, dynamic>? data;
+  bool _isInit = false;
+
+  Map<String, dynamic>? _receiveData(Object? arguments){
+    if(_isInit) return data;
+
+    data = (arguments != null) ? arguments as Map<String, dynamic>: null;
+
+    if(data == null) return data;
+
+    name.text = data!["name"];
+    type.text = data!["type"];
+    breed.text = data!["breed"];
+    dateOfBirth.text = data!["date_of_birth"];
+
+    _isInit = true;
+    return data;
+  }
+
   @override
   Widget build(BuildContext context) {
-    String pageTitle = "Cadastrar Novo Pet";
-    bool actionCreate = true;
-
     var arguments = ModalRoute.of(context)?.settings.arguments;
+    var receivedData = _receiveData(arguments);
 
-    Map<String,dynamic>? data = (arguments != null) ? arguments as Map<String,dynamic> : null;
-    
-    if(data != null){
-      name.text = data["name"];
-      type.text = data["type"];
-      breed.text = data["breed"];
-      dateOfBirth.text = data["date_of_birth"];
-
-      pageTitle = "Editar ${data["name"]}";
-      actionCreate = false;
-    }
+    String pageTitle = (receivedData != null) ? "Editar ${receivedData["name"]}":"Cadastrar Novo Pet";
+    bool actionCreate = (receivedData != null)? false:true;
 
     return Scaffold(
       appBar: AppBar(
