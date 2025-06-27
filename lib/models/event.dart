@@ -3,23 +3,22 @@ class Event {
   String type;
   String date;
   String observation;
-  int pet_id;
+  int petId;
 
   Event({
     this.id,
     required this.type,
     required this.date,
     required this.observation,
-    required this.pet_id,
+    required this.petId,
   });
 
   factory Event.fromMap(Map<String, dynamic> map) {
     return Event(
-      id: map['id'],
       type: map['type'],
       date: map['date'],
       observation: map['observation'],
-      pet_id: map['pet_id'],
+      petId: map['pet_id'],
     );
   }
 
@@ -29,12 +28,12 @@ class Event {
       "type": type,
       "date": date,
       "observation": observation,
-      "pet_id": pet_id,
+      "pet_id": petId,
     };
   }
 
   @override
   String toString() {
-    return 'Event {id: $id, type: $type, date: $date, observation: $observation, petId: $pet_id}';
+    return 'Event {id: $id, type: $type, date: $date, observation: $observation, petId: $petId}';
   }
 }
