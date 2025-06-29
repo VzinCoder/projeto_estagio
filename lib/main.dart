@@ -17,7 +17,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key,});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,6 @@ class MyApp extends StatelessWidget {
         //MyAppRoutes.petDetails.routeName:(BuildContext context)=> PetDetails(),
         MyAppRoutes.petVaccines.routeName:(BuildContext context)=> PetVaccines(),
         MyAppRoutes.addPetVaccine.routeName:(BuildContext context)=> AddPetVaccine(),
-        MyAppRoutes.petEvents.routeName:(BuildContext context)=> PetEvents(),
         MyAppRoutes.addPetEvent.routeName:(BuildContext context)=> AddPetEvent(),
       },
     );
