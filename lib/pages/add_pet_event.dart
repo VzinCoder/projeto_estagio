@@ -1,20 +1,64 @@
 import "package:flutter/material.dart";
-import 'package:projeto_estagio/models/event.dart';
+import "../utils/db.dart";
+import "../repositories/event_repository.dart";
+import "../models/event.dart";
+import "package:sqflite/sqflite.dart";
+import "../my_app_routes.dart";
 
 class AddPetEvent extends StatefulWidget {
   final Event? event;
-  const AddPetEvent({super.key, this.event});
+  final int? petId;
+
+  const AddPetEvent({super.key, this.event, this.petId});
 
   @override
-  State<AddPetEvent> createState() => _AddPetEventState();
+  State<AddPetEvent> createState() {
+    return _AddPetEventState();
+  }
 }
 
 class _AddPetEventState extends State<AddPetEvent> {
   late final TextEditingController nameController;
   late final TextEditingController dateController;
   late final TextEditingController descriptionController;
+  late final int petId;
 
-  bool get isEditing => widget.event != null;
+  late final bool isEditing;
+
+  Future<EventRepository> _initRepository() async {
+    Db instance = Db();
+    Database database = await instance.database;
+    EventRepository eventRepository = EventRepository(database);
+    return eventRepository;
+  }
+
+  Future<int> _addEvent() async {
+    Event event = Event(
+      type: nameController.text,
+      date: dateController.text,
+      observation: descriptionController.text,
+      petId: petId,
+    );
+
+    EventRepository eventRepository = await _initRepository();
+
+    int id = await eventRepository.insertEvent(event);
+
+    return id;
+  }
+
+  Future<int> _updateEvent() async {
+    Event event = Event(
+      id: widget.event?.id ?? 0,
+      type: nameController.text,
+      date: dateController.text,
+      observation: descriptionController.text,
+      petId: petId,
+    );
+
+    EventRepository eventRepository = await _initRepository();
+    return await eventRepository.updateEvent(event);
+  }
 
   @override
   void initState() {
@@ -24,6 +68,9 @@ class _AddPetEventState extends State<AddPetEvent> {
     descriptionController = TextEditingController(
       text: widget.event?.observation ?? '',
     );
+
+    isEditing = widget.event != null;
+    petId = widget.event?.petId ?? widget.petId!;
   }
 
   Future<void> _selectDate(TextEditingController controller) async {
@@ -35,42 +82,8 @@ class _AddPetEventState extends State<AddPetEvent> {
     );
 
     if (date != null) {
-      final dayFormatted = date.day.toString().padLeft(2, '0');
-      final monthFormatted = date.month.toString().padLeft(2, '0');
-      final year = date.year.toString();
-      controller.text = "$dayFormatted/$monthFormatted/$year";
+      controller.text = '${date.day}/${date.month}/${date.year}';
     }
-  }
-
-  void save() {
-    final type = nameController.text;
-    final date = dateController.text;
-    final observation = descriptionController.text;
-
-    if (isEditing) {
-      final updated = widget.event!;
-      updated.type = type;
-      updated.date = date;
-      updated.observation = observation;
-    } else {
-      final newEvent = Event(
-        type: type,
-        date: date,
-        observation: observation,
-        petId: 0,
-      );
-
-      print('Evento criado: $newEvent');
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Evento ${isEditing ? 'atualizado' : 'criado'} com sucesso!',
-        ),
-      ),
-    );
-    Navigator.pop(context);
   }
 
   @override
@@ -114,10 +127,27 @@ class _AddPetEventState extends State<AddPetEvent> {
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: save,
-              child: Text(isEditing ? 'Atualizar' : 'Salvar'),
+            const SizedBox(height: 20),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.deepPurple[100],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: TextButton(
+                onPressed: () async {
+                  if (isEditing) {
+                    await _updateEvent();
+                  } else {
+                    await _addEvent();
+                  }
+
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  isEditing ? 'Atualizar Evento' : 'Adicionar Evento',
+                  style: TextStyle(color: Colors.deepPurple),
+                ),
+              ),
             ),
           ],
         ),

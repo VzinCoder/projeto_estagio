@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_estagio/pages/add_pet_vaccine.dart';
+import 'package:projeto_estagio/pages/pet_events.dart';
 import 'package:projeto_estagio/pages/pet_vaccines.dart';
 import '../models/pet.dart';
 import '../my_app_routes.dart';
@@ -13,10 +13,7 @@ class PetDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Detalhes do Pet",
-          style: TextStyle(color: Colors.white),
-        ),
+        title: Text("Detalhes do Pet", style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
       body: Padding(
@@ -29,7 +26,10 @@ class PetDetails extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 24,
+                  horizontal: 16,
+                ),
                 child: Column(
                   children: [
                     CircleAvatar(
@@ -69,10 +69,11 @@ class PetDetails extends StatelessWidget {
                   label: "Ver Eventos",
                   color: Colors.deepPurple.shade200,
                   onPressed: () {
-                    Navigator.pushNamed(
+                    Navigator.push(
                       context,
-                      MyAppRoutes.petEvents.routeName,
-                      arguments: pet.id,
+                      MaterialPageRoute(
+                        builder: (context) => PetEvents(petId: pet.id!),
+                      ),
                     );
                   },
                 ),

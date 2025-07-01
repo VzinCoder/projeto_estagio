@@ -15,20 +15,20 @@ class Event {
 
   factory Event.fromMap(Map<String, dynamic> map) {
     return Event(
+      id: map['id'],
       type: map['type'],
       date: map['date'],
       observation: map['observation'],
-      petId: map['pet_id'],
+      petId: map['animal_id'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      "id": id,
       "type": type,
       "date": date,
       "observation": observation,
-      "pet_id": petId,
+      "animal_id": petId,
     };
   }
 
