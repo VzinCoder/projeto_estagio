@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         MyAppRoutes.homePage.routeName: (BuildContext context)=> HomePage(),
         MyAppRoutes.addPet.routeName: (BuildContext context)=> AddPet(),
         //MyAppRoutes.petDetails.routeName:(BuildContext context)=> PetDetails(),
-        MyAppRoutes.petVaccines.routeName:(BuildContext context)=> PetVaccines(),
+        //MyAppRoutes.petVaccines.routeName:(BuildContext context)=> PetVaccines(),
         MyAppRoutes.addPetVaccine.routeName:(BuildContext context)=> AddPetVaccine(),
         MyAppRoutes.addPetEvent.routeName:(BuildContext context)=> AddPetEvent(),
       },

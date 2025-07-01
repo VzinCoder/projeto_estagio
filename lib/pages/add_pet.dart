@@ -5,6 +5,7 @@ import "../repositories/pet_repository.dart";
 import "../models/pet.dart";
 import "package:sqflite/sqflite.dart";
 import "../my_app_routes.dart";
+import "../utils/injector.dart";
 
 class AddPet extends StatefulWidget{
   final Pet? pet;
@@ -26,12 +27,7 @@ class _AddPetState extends State<AddPet>{
   late final String pageTitle;
   late final bool isEditing;
 
-  Future<PetRepository> _initRepository()async{
-    Db instance = Db();
-    Database database = await instance.database;
-    PetRepository petRepository = PetRepository(database);
-    return petRepository;
-  }
+  final petRepository = getIt<PetRepository>();
 
   Future<int> _addPet() async {
 
@@ -41,8 +37,6 @@ class _AddPetState extends State<AddPet>{
       breed: breed.text,
       dateOfBirth: dateOfBirth.text
     );
-
-    PetRepository petRepository = await _initRepository();
 
     int id = await petRepository.insertPet(pet);
 
@@ -58,8 +52,6 @@ class _AddPetState extends State<AddPet>{
       breed: breed.text,
       dateOfBirth: dateOfBirth.text
     );
-
-    PetRepository petRepository = await _initRepository();
 
     int id = await petRepository.updatePet(pet);
 
