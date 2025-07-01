@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_estagio/pages/add_pet_vaccine.dart';
+import 'package:projeto_estagio/pages/pet_vaccines.dart';
 import '../models/pet.dart';
 import '../my_app_routes.dart';
 
@@ -57,11 +59,7 @@ class PetDetails extends StatelessWidget {
                   label: "Ver Vacinas",
                   color: Colors.deepPurple,
                   onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      MyAppRoutes.petVaccines.routeName,
-                      arguments: pet.id,
-                    );
+                    Navigator.push(context, MaterialPageRoute(builder: (ctx)=> PetVaccines(pet: pet)));
                   },
                 ),
                 SizedBox(height: 12),
