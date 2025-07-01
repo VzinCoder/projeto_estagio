@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_estagio/models/pet.dart';
 import 'package:projeto_estagio/models/vaccine.dart';
+import 'package:projeto_estagio/repositories/vaccine_repository.dart';
+import 'package:projeto_estagio/utils/injector.dart';
 
 class AddPetVaccine extends StatefulWidget {
   final Vaccine? vaccine;
-  const AddPetVaccine({super.key, this.vaccine});
+  final Pet? pet;
+  const AddPetVaccine({super.key, this.pet, this.vaccine});
 
   @override
   State<AddPetVaccine> createState() => _AddPetVaccineState();
 }
 
 class _AddPetVaccineState extends State<AddPetVaccine> {
+  final VaccineRepository vaccineRepository = getIt<VaccineRepository>();
   late final TextEditingController nameController;
   late final TextEditingController dateAplicationController;
   late final TextEditingController dateNextController;
@@ -44,7 +49,7 @@ class _AddPetVaccineState extends State<AddPetVaccine> {
     }
   }
 
-  void save() {
+  void save() async {
     final name = nameController.text;
     final dateApp = dateAplicationController.text;
     final nextDate = dateNextController.text;
@@ -54,25 +59,28 @@ class _AddPetVaccineState extends State<AddPetVaccine> {
       updated.name = name;
       updated.dateApplication = dateApp;
       updated.nextDateApplication = nextDate;
-    } else {
-      final newVaccine = Vaccine(
-        name: name,
-        dateApplication: dateApp,
-        nextDateApplication: nextDate,
-        petId: 0,
-      );
 
-      print('Vacina criada: $newVaccine');
+      await vaccineRepository.updateVaccine(updated);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vacina atualizada com sucesso!')),
+      );
+      return Navigator.pop(context,updated);
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Vacina ${isEditing ? 'atualizada' : 'salva'} com sucesso!',
-        ),
-      ),
+    final newVaccine = Vaccine(
+      name: name,
+      dateApplication: dateApp,
+      nextDateApplication: nextDate,
+      petId: widget.pet!.id!,
     );
-    Navigator.pop(context);
+
+    final int newId = await vaccineRepository.insertVaccine(newVaccine);
+    newVaccine.id = newId;
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Vacina salva com sucesso!')));
+    Navigator.pop(context, newVaccine);
   }
 
   @override
