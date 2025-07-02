@@ -7,18 +7,18 @@ import "package:sqflite/sqflite.dart";
 import "../my_app_routes.dart";
 import "../utils/injector.dart";
 
-class AddPet extends StatefulWidget{
+class AddPet extends StatefulWidget {
   final Pet? pet;
 
   const AddPet({super.key, this.pet});
-  
+
   @override
   State<AddPet> createState() {
     return _AddPetState();
   }
 }
 
-class _AddPetState extends State<AddPet>{
+class _AddPetState extends State<AddPet> {
   late final TextEditingController name;
   late final TextEditingController type;
   late final TextEditingController breed;
@@ -30,12 +30,11 @@ class _AddPetState extends State<AddPet>{
   final petRepository = getIt<PetRepository>();
 
   Future<int> _addPet() async {
-
     Pet pet = Pet(
       name: name.text,
       type: type.text,
       breed: breed.text,
-      dateOfBirth: dateOfBirth.text
+      dateOfBirth: dateOfBirth.text,
     );
 
     int id = await petRepository.insertPet(pet);
@@ -44,13 +43,12 @@ class _AddPetState extends State<AddPet>{
   }
 
   Future<int> _updatePet(int petId) async {
-
     Pet pet = Pet(
       id: petId,
       name: name.text,
       type: type.text,
       breed: breed.text,
-      dateOfBirth: dateOfBirth.text
+      dateOfBirth: dateOfBirth.text,
     );
 
     int id = await petRepository.updatePet(pet);
@@ -61,20 +59,14 @@ class _AddPetState extends State<AddPet>{
   @override
   void initState() {
     super.initState();
-    name = TextEditingController(
-      text: widget.pet?.name ?? ""
-    );
-    type = TextEditingController(
-      text: widget.pet?.type ?? ""
-    );
-    breed = TextEditingController(
-      text: widget.pet?.breed ?? ""
-    );
-    dateOfBirth = TextEditingController(
-      text: widget.pet?.dateOfBirth ?? ""
-    );
+    name = TextEditingController(text: widget.pet?.name ?? "");
+    type = TextEditingController(text: widget.pet?.type ?? "");
+    breed = TextEditingController(text: widget.pet?.breed ?? "");
+    dateOfBirth = TextEditingController(text: widget.pet?.dateOfBirth ?? "");
 
-    pageTitle = widget.pet != null ? "Editar ${widget.pet!.name}":"Cadastrar novo pet";
+    pageTitle = widget.pet != null
+        ? "Editar ${widget.pet!.name}"
+        : "Cadastrar novo pet";
     isEditing = widget.pet != null;
   }
 
@@ -82,15 +74,10 @@ class _AddPetState extends State<AddPet>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          pageTitle,
-          style: TextStyle(
-              color: Colors.white
-            )
-        ),
+        title: Text(pageTitle, style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
-      body:Container(
+      body: Container(
         padding: EdgeInsets.all(20),
         child: ListView(
           children: [
@@ -116,23 +103,22 @@ class _AddPetState extends State<AddPet>{
               keyBoardType: TextInputType.datetime,
             ),
             Container(
-                decoration: BoxDecoration(
-                  color: Colors.deepPurple[100],
-                  borderRadius: BorderRadius.circular(10)
-                ),
-                child: TextButton(
-                  onPressed: ()async{
+              decoration: BoxDecoration(
+                color: Colors.deepPurple[100],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: TextButton(
+                onPressed: () async {
+                  if (!isEditing) {
+                    await _addPet();
+                  } else {
+                    await _updatePet(widget.pet!.id!);
+                  }
 
-                    if(!isEditing){
-                      await _addPet();
-                    }else{
-                      await _updatePet(widget.pet!.id!);
-                    }
-                    
-                    Navigator.pushNamed(context, MyAppRoutes.homePage.routeName);
-                  },
-                  child: Text("Salvar")
-                )
+                  Navigator.pop(context, true);
+                },
+                child: Text("Salvar"),
+              ),
             ),
           ],
         ),
