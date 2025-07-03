@@ -115,6 +115,8 @@ class _AddPetState extends State<AddPet> {
                     await _updatePet(widget.pet!.id!);
                   }
 
+                  if (!context.mounted) return;
+
                   Navigator.pop(context, true);
                 },
                 child: Text("Salvar"),
