@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:projeto_estagio/utils/injector.dart";
 import "../utils/db.dart";
 import "../repositories/event_repository.dart";
 import "../models/event.dart";
@@ -24,13 +25,7 @@ class _AddPetEventState extends State<AddPetEvent> {
   late final int petId;
 
   late final bool isEditing;
-
-  Future<EventRepository> _initRepository() async {
-    Db instance = Db();
-    Database database = await instance.database;
-    EventRepository eventRepository = EventRepository(database);
-    return eventRepository;
-  }
+  final EventRepository eventRepository = getIt<EventRepository>();
 
   Future<int> _addEvent() async {
     Event event = Event(
@@ -40,10 +35,7 @@ class _AddPetEventState extends State<AddPetEvent> {
       petId: petId,
     );
 
-    EventRepository eventRepository = await _initRepository();
-
     int id = await eventRepository.insertEvent(event);
-
     return id;
   }
 
@@ -56,7 +48,6 @@ class _AddPetEventState extends State<AddPetEvent> {
       petId: petId,
     );
 
-    EventRepository eventRepository = await _initRepository();
     return await eventRepository.updateEvent(event);
   }
 
@@ -141,6 +132,15 @@ class _AddPetEventState extends State<AddPetEvent> {
                     await _addEvent();
                   }
 
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        isEditing
+                            ? 'Evento atualizado com sucesso!'
+                            : "Evento salvo com sucesso!",
+                      ),
+                    ),
+                  );
                   Navigator.pop(context);
                 },
                 child: Text(
