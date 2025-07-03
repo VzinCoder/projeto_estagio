@@ -1,9 +1,8 @@
 import "package:flutter/material.dart";
 import "package:projeto_estagio/utils/injector.dart";
-import "../utils/db.dart";
 import "../repositories/event_repository.dart";
 import "../models/event.dart";
-import "package:sqflite/sqflite.dart";
+
 
 class AddPetEvent extends StatefulWidget {
   final Event? event;
