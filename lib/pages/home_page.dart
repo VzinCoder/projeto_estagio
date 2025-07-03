@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_estagio/pages/add_pet.dart';
 import 'package:projeto_estagio/utils/injector.dart';
-import '../utils/db.dart';
 import '../repositories/pet_repository.dart';
 import '../models/pet.dart';
-import 'package:sqflite/sqflite.dart';
-import '../my_app_routes.dart';
 import 'pet_details.dart'; // importe a tela de detalhes
 
 class HomePage extends StatefulWidget {
@@ -25,7 +22,6 @@ class _HomePageState extends State<HomePage> {
     _petsFuture = _getAllPets();
   }
 
-  @override
   void _navigateToAddPet({Pet? pet}) async {
     final bool? result = await Navigator.push(
       context,
