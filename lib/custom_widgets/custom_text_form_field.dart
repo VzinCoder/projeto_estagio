@@ -2,57 +2,53 @@ import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatelessWidget{
   final String? labelText;
-  final String? hintText;
   final TextInputType? keyBoardType;
   final TextEditingController controller;
-
+  final bool isInputTypeData;
+  
   const CustomTextFormField(
     {
       super.key,
       this.labelText,
-      this.hintText,
       this.keyBoardType,
       required this.controller,
     }
-  );
+  ): isInputTypeData = keyBoardType == TextInputType.datetime;
+
+  void _showDatePicker(BuildContext context) async {
+    DateTime? date = await showDatePicker(
+      context: context, 
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000), 
+      lastDate: DateTime(2100)
+    );
+    if(date != null){
+      controller.text = "${date.day.toString().padLeft(2,"0")}/${date.month.toString().padLeft(2,"0")}/${date.year}";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(
-        vertical: 30,
+        vertical: 10,
       ),
       child: TextFormField(
         decoration: InputDecoration(
+          border: OutlineInputBorder(),
           label: Text(
-            labelText != null ? labelText! : "Texto"
+            labelText ?? "Texto"
           ),
-          hint: Text(
-            hintText != null ? hintText! : "Ex: Texto"
-          ),
-          filled: true,
-          fillColor: Colors.black12,
-          suffix: (keyBoardType == TextInputType.datetime) 
+          suffixIcon: isInputTypeData
           ? 
-          IconButton(
-            onPressed: ()async{
-              DateTime? date = await showDatePicker(
-                context: context, 
-                initialDate: DateTime.now(),
-                firstDate: DateTime(2000), 
-                lastDate: DateTime(2100)
-              );
-              if(date != null){
-                controller.text = "${date.day.toString().padLeft(2,"0")}/${date.month.toString().padLeft(2,"0")}/${date.year}";
-              }
-            },
-            icon: Icon(Icons.calendar_today)
-          )
+            Icon(Icons.calendar_today)
           :
-          null
+            null
         ),
-        keyboardType: keyBoardType != null ? keyBoardType:TextInputType.text,
+        keyboardType: keyBoardType ?? TextInputType.text,
         controller: controller,
+        onTap: isInputTypeData ? () => _showDatePicker(context)  : null,
+        readOnly: isInputTypeData,
       ),
     );
   }
