@@ -109,11 +109,23 @@ class _AddPetState extends State<AddPet> {
                 onPressed: () async {
                   if (!isEditing) {
                     await _addPet();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Pet adicionado com sucesso!"),
+                      ),
+                    );
                   } else {
                     await _updatePet(widget.pet!.id!);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Pet atualizado com sucesso!"),
+                      ),
+                    );
                   }
 
-                  Navigator.pushNamed(context, MyAppRoutes.homePage.routeName);
+                  if (!context.mounted) return;
+
+                  Navigator.pop(context, true);
                 },
                 child: Text("Salvar"),
               ),

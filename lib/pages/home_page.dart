@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_estagio/pages/add_pet.dart';
+import 'package:projeto_estagio/utils/injector.dart';
 import '../utils/db.dart';
 import '../repositories/pet_repository.dart';
 import '../models/pet.dart';
@@ -15,35 +16,51 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<PetRepository> _initRepository() async {
-    Db instance = Db();
-    Database database = await instance.database;
-    PetRepository repository = PetRepository(database);
-    return repository;
+  final PetRepository repository = getIt<PetRepository>();
+  late Future<List<Pet>> _petsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _petsFuture = _getAllPets();
+  }
+
+  @override
+  void _navigateToAddPet({Pet? pet}) async {
+    final bool? result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddPet(pet: pet),
+      ),
+    );
+
+    if (result == true) {
+      setState(() {
+        _petsFuture = _getAllPets();
+      });
+    }
   }
 
   Future<List<Pet>> _getAllPets() async {
-    PetRepository repository = await _initRepository();
     return await repository.getAllPets();
   }
 
-  Future<int> _deletePet(int id) async {
-    PetRepository repository = await _initRepository();
-    return await repository.deletePet(id);
+  Future<void> _deletePet(int id) async {
+    await repository.deletePet(id);
+    setState(() {
+      _petsFuture = _getAllPets();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Meus Pets",
-          style: TextStyle(color: Colors.white),
-        ),
+        title: Text("Meus Pets", style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
       body: FutureBuilder<List<Pet>>(
-        future: _getAllPets(),
+        future: _petsFuture,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<Pet> pets = snapshot.data!;
@@ -108,15 +125,13 @@ class _HomePageState extends State<HomePage> {
               child: Text("Algo deu errado ao obter a lista de pets"),
             );
           } else {
-            return Center(
-              child: Text("Carregando..."),
-            );
+            return Center(child: Text("Carregando..."));
           }
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, MyAppRoutes.addPet.routeName);
+          _navigateToAddPet();
         },
         child: Icon(Icons.add),
       ),
