@@ -4,7 +4,6 @@ import '../utils/db.dart';
 import '../repositories/event_repository.dart';
 import '../models/event.dart';
 import 'package:sqflite/sqflite.dart';
-import '../my_app_routes.dart';
 import '../pages/event_details.dart';
 
 class PetEvents extends StatefulWidget {
