@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_estagio/pages/add_pet_event.dart';
-import '../utils/db.dart';
 import '../repositories/event_repository.dart';
 import '../models/event.dart';
-import 'package:sqflite/sqflite.dart';
 import '../pages/event_details.dart';
+import 'package:projeto_estagio/utils/injector.dart';
 
 class PetEvents extends StatefulWidget {
   final int petId;
@@ -15,22 +14,15 @@ class PetEvents extends StatefulWidget {
 }
 
 class _PetEventsState extends State<PetEvents> {
-  Future<EventRepository> _initRepository() async {
-    Db instance = Db();
-    Database database = await instance.database;
-    EventRepository repository = EventRepository(database);
-    return repository;
-  }
+  final _repository = getIt<EventRepository>();
 
   Future<List<Event>> _getAllEvents() async {
-    EventRepository repository = await _initRepository();
-    List<Event> allEvents = await repository.getAllEvents();
+    List<Event> allEvents = await _repository.getAllEvents();
     return allEvents.where((event) => event.petId == widget.petId).toList();
   }
 
   Future<int> _deleteEvent(int id) async {
-    EventRepository repository = await _initRepository();
-    return await repository.deleteEvent(id);
+    return await _repository.deleteEvent(id);
   }
 
   @override
