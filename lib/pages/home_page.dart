@@ -36,6 +36,14 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
+  void _navigateToPetDetails({required Pet pet}) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PetDetails(pet: pet),
+      ),
+    );
+  } 
 
   Future<List<Pet>> _getAllPets() async {
     return await repository.getAllPets();
@@ -55,81 +63,122 @@ class _HomePageState extends State<HomePage> {
         title: Text("Meus Pets", style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
-      body: FutureBuilder<List<Pet>>(
-        future: _petsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<Pet> pets = snapshot.data!;
+      body: Padding(
+        padding: EdgeInsetsGeometry.all(20),
+        child: FutureBuilder(
+          future: _petsFuture,
+          builder: (context, snapshot){
+
+            if(snapshot.connectionState == ConnectionState.waiting){
+
+              return CircularProgressIndicator();
+
+            }else if(snapshot.hasError){
+
+              return Center(
+                child: Text("Erro ao carregar pets: ${snapshot.error}"),
+              );
+
+            }
+
+            List<Pet>? pets = snapshot.data;
+
+            if(pets == null || pets.isEmpty){
+              return Center(
+                child: Text("Nenhum Pet cadastrado"),
+              );
+            }
+
 
             return ListView.builder(
-              padding: EdgeInsets.all(20),
               itemCount: pets.length,
-              itemBuilder: (context, index) {
-                Pet pet = pets[index];
-
+              itemBuilder: (context, index){
                 return Container(
-                  margin: EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 0.5,
-                      color: Colors.deepPurpleAccent,
-                    ),
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.deepPurple[50],
+                  margin: EdgeInsets.symmetric(
+                    vertical: 10
                   ),
-                  child: ListTile(
-                    title: Text(pet.name),
-                    subtitle: Text(pet.type),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PetDetails(pet: pet),
-                        ),
-                      );
-                    },
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AddPet(pet: pet),
-                              ),
-                            );
-                          },
-                          child: Icon(Icons.edit),
-                        ),
-                        SizedBox(width: 8),
-                        ElevatedButton(
-                          onPressed: () async {
-                            await _deletePet(pet.id!);
-                            setState(() {});
-                          },
-                          child: Icon(Icons.delete),
-                        ),
-                      ],
-                    ),
+                  child: PetCard(
+                    pet: pets[index],
+                    edit: _navigateToAddPet,
+                    delete: _deletePet,
+                    details: _navigateToPetDetails,
                   ),
                 );
-              },
+              }
             );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text("Algo deu errado ao obter a lista de pets"),
-            );
-          } else {
-            return Center(child: Text("Carregando..."));
+
           }
-        },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _navigateToAddPet();
         },
         child: Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class PetCard extends StatelessWidget{
+  const PetCard(
+    {
+      super.key, 
+      required this.pet,
+      required this.edit,
+      required this.delete,
+      required this.details
+    }
+  );
+
+  final Pet pet;
+  final void Function({required Pet pet}) edit;
+  final void Function(int id) delete;
+  final void Function({required Pet pet}) details;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 5,
+      child: ListTile(
+        contentPadding: EdgeInsets.fromLTRB(8, 6, 8, 6),
+        onTap: (){
+          details(pet: pet);
+        },
+        title: Text(
+          pet.name,
+          style: TextStyle(
+            fontWeight: FontWeight.w900
+          ),
+        ),
+        subtitle: Text(
+          pet.type
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(8),
+                minimumSize: Size(40, 40) 
+              ),
+              onPressed: (){
+                edit(pet: pet);
+              },
+              child: Icon(Icons.edit)
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(8),
+                minimumSize: Size(40, 40) 
+              ),
+              onPressed: (){
+                delete(pet.id!);
+              },
+              child: Icon(Icons.delete)
+            ),
+          ],
+        ),
       ),
     );
   }
