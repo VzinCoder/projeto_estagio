@@ -125,7 +125,9 @@ class _AddPetState extends State<AddPet> {
                     );
                   }
 
-                  Navigator.pop(context);
+                  if (!context.mounted) return;
+
+                  Navigator.pop(context, true);
                 },
                 child: Text("Salvar"),
               ),
