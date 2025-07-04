@@ -80,55 +80,48 @@ class _AddPetState extends State<AddPet> {
           children: [
             CustomTextFormField(
               labelText: "Nome",
-              hintText: "Ex: Rex",
               controller: name,
             ),
             CustomTextFormField(
               labelText: "Espécie",
-              hintText: "Ex: Cachorro",
               controller: type,
             ),
             CustomTextFormField(
               labelText: "Raça",
-              hintText: "Ex: Pastor Alemão",
               controller: breed,
             ),
             CustomTextFormField(
               labelText: "Data de nascimento",
-              hintText: "Ex: 21/12/2025",
               controller: dateOfBirth,
               keyBoardType: TextInputType.datetime,
             ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.deepPurple[100],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: TextButton(
-                onPressed: () async {
-                  if (!isEditing) {
-                    await _addPet();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Pet adicionado com sucesso!"),
-                      ),
-                    );
-                  } else {
-                    await _updatePet(widget.pet!.id!);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Pet atualizado com sucesso!"),
-                      ),
-                    );
-                  }
-
-                  if (!context.mounted) return;
-
-                  Navigator.pop(context, true);
-                },
-                child: Text("Salvar"),
-              ),
+            SizedBox(
+              height: 30,
             ),
+            ElevatedButton(
+              onPressed: () async {
+                if (!isEditing) {
+                  await _addPet();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Pet adicionado com sucesso!"),
+                    ),
+                  );
+                } else {
+                  await _updatePet(widget.pet!.id!);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Pet atualizado com sucesso!"),
+                    ),
+                  );
+                }
+
+                if (!context.mounted) return;
+
+                Navigator.pop(context, true);
+              },
+              child: Text('Salvar')
+            )
           ],
         ),
       ),
