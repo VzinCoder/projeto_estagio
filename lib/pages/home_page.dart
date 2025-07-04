@@ -93,16 +93,11 @@ class _HomePageState extends State<HomePage> {
             return ListView.builder(
               itemCount: pets.length,
               itemBuilder: (context, index){
-                return Container(
-                  margin: EdgeInsets.symmetric(
-                    vertical: 10
-                  ),
-                  child: PetCard(
-                    pet: pets[index],
-                    edit: _navigateToAddPet,
-                    delete: _deletePet,
-                    details: _navigateToPetDetails,
-                  ),
+                return PetCard(
+                  pet: pets[index],
+                  edit: _navigateToAddPet,
+                  delete: _deletePet,
+                  details: _navigateToPetDetails,
                 );
               }
             );
