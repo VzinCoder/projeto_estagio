@@ -73,7 +73,9 @@ class _HomePageState extends State<HomePage> {
 
               return CircularProgressIndicator();
 
-            }else if(snapshot.hasError){
+            }
+            
+            if(snapshot.hasError){
 
               return Center(
                 child: Text("Erro ao carregar pets: ${snapshot.error}"),
@@ -81,27 +83,25 @@ class _HomePageState extends State<HomePage> {
 
             }
 
-            List<Pet>? pets = snapshot.data;
+            if(snapshot.hasData){
+              if(snapshot.data!.isEmpty) return CenterMsg(msg: "Nenhum Pet cadastrado");
+              
+              List<Pet> pets = snapshot.data!;
 
-            if(pets == null || pets.isEmpty){
-              return Center(
-                child: Text("Nenhum Pet cadastrado"),
+              return ListView.builder(
+                itemCount: pets.length,
+                itemBuilder: (context, index){
+                  return PetCard(
+                    pet: pets[index],
+                    edit: _navigateToAddPet,
+                    delete: _deletePet,
+                    details: _navigateToPetDetails,
+                  );
+                }
               );
             }
 
-
-            return ListView.builder(
-              itemCount: pets.length,
-              itemBuilder: (context, index){
-                return PetCard(
-                  pet: pets[index],
-                  edit: _navigateToAddPet,
-                  delete: _deletePet,
-                  details: _navigateToPetDetails,
-                );
-              }
-            );
-
+            return CenterMsg(msg: "Não foi possivel recuperar pets do banco de dados");
           }
         ),
       ),
@@ -175,6 +175,19 @@ class PetCard extends StatelessWidget{
           ],
         ),
       ),
+    );
+  }
+}
+
+class CenterMsg extends StatelessWidget{
+  final String msg;
+
+  const CenterMsg({super.key, required this.msg});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(msg),
     );
   }
 }
