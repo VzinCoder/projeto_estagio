@@ -38,98 +38,109 @@ class _PetEventsState extends State<PetEvents> {
           if (snapshot.hasData) {
             List<Event> events = snapshot.data!;
 
-            return ListView.builder(
-              padding: const EdgeInsets.only(bottom: 80),
-              itemCount: events.length,
-              itemBuilder: (context, index) {
-                final event = events[index];
-
-                return GestureDetector(
-                  onTap: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EventDetails(event: event),
-                      ),
-                    );
-                    setState(() {});
-                  },
-                  child: Card(
-                    elevation: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+            return Padding(
+              padding: const EdgeInsets.all(20),
+              child: ListView.builder(
+                padding: const EdgeInsets.only(bottom: 80),
+                itemCount: events.length,
+                itemBuilder: (context, index) {
+                  final event = events[index];
+              
+                  return GestureDetector(
+                    onTap: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EventDetails(event: event),
+                        ),
+                      );
+                      setState(() {});
+                    },
+                    child: Card(
+                      elevation: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    event.type,
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    "📅 ${event.date}",
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    "Obs: ${event.observation}",
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Row(
                               children: [
-                                Text(
-                                  event.type,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                  overflow: TextOverflow.ellipsis,
+                                SizedBox(width: 8),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.all(8),
+                                    minimumSize: Size(40, 40) 
+                                  ),
+                                  onPressed: () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            AddPetEvent(event: event),
+                                      ),
+                                    );
+                                    setState(() {});
+                                  },
+                                  child: const Icon(
+                                    Icons.edit,
+                                    color: Colors.deepPurple,
+                                  ),
                                 ),
-                                Text(
-                                  "📅 ${event.date}",
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Text(
-                                  "Obs: ${event.observation}",
-                                  overflow: TextOverflow.ellipsis,
+                                SizedBox(width: 8),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.all(8),
+                                    minimumSize: Size(40, 40) 
+                                  ),
+                                  onPressed: () async {
+                                    if (event.id != null) {
+                                      await _deleteEvent(event.id!);
+                                      setState(() {});
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Evento inválido, não pode ser deletado',
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: const Icon(
+                                    Icons.delete,
+                                    color: Colors.deepPurple,
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          Row(
-                            children: [
-                              SizedBox(width: 8),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddPetEvent(event: event),
-                                    ),
-                                  );
-                                  setState(() {});
-                                },
-                                child: const Icon(
-                                  Icons.edit,
-                                  color: Colors.purple,
-                                ),
-                              ),
-                              SizedBox(width: 8),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  if (event.id != null) {
-                                    await _deleteEvent(event.id!);
-                                    setState(() {});
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'Evento inválido, não pode ser deletado',
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                child: const Icon(
-                                  Icons.delete,
-                                  color: Colors.purple,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             );
           } else if (snapshot.hasError) {
             return Center(
