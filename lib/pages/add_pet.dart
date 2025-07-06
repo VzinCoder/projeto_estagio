@@ -46,6 +46,7 @@ class _AddPetState extends State<AddPet> {
       'type': type.text,
       'breed': breed.text,
       'date_of_birth': dateOfBirth.text,
+      'updated_at': widget.pet!.updatedAt
     };
 
     Pet updatedPet = Pet.fromMap(petMap);
