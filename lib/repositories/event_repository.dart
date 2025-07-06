@@ -1,3 +1,4 @@
+import 'package:projeto_estagio/utils/date_parser.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:projeto_estagio/models/event.dart';
 import 'package:projeto_estagio/repositories/i_event_repository.dart';
@@ -37,6 +38,7 @@ class EventRepository implements IEventRepository {
     // if (event.id == null) {
     //   throw Exception("Cannot update event without ID");
     // }
+    event.updatedAt = DateParser.formatDate(DateTime.now());
     return db.update(
       'events',
       event.toMap(),

@@ -1,4 +1,5 @@
 import "package:projeto_estagio/models/vaccine.dart";
+import "package:projeto_estagio/utils/date_parser.dart";
 import "package:sqflite/sqflite.dart";
 import "i_vaccine_repository.dart";
 
@@ -7,7 +8,7 @@ class VaccineRepository implements IVaccineRepository{
   final String table = "vaccines";
   VaccineRepository(this.db);
 
-
+  // se a vacina acabou de ser criada então o updated_at já foi inicializado.
   @override
   Future<int> insertVaccine(Vaccine vaccine) async {
     return await db.insert(table, vaccine.toMap());
@@ -50,6 +51,7 @@ class VaccineRepository implements IVaccineRepository{
     //   throw Exception("Cannot update vaccine without ID");
     // }
 
+    vaccine.updatedAt = DateParser.formatDate(DateTime.now());
     return db.update(
       table, 
       vaccine.toMap(),
