@@ -1,3 +1,5 @@
+import 'package:projeto_estagio/utils/date_parser.dart';
+
 import '../utils/injector.dart';
 import 'package:uuid/uuid.dart';
 
@@ -9,13 +11,17 @@ class Event {
   String date;
   String observation;
   String petId;
+  late String updatedAt;
 
   Event({
     required this.type,
     required this.date,
     required this.observation,
     required this.petId,
-  }): id = uuid.v4();
+  }): id = uuid.v4()
+  {
+    updatedAt = DateParser.formatDate(DateTime.now());
+  }
 
   Event._withId({
     required this.id,
@@ -23,6 +29,7 @@ class Event {
     required this.date,
     required this.observation,
     required this.petId,
+    required this.updatedAt
   });
 
   factory Event.fromMap(Map<String, dynamic> map) {
@@ -34,6 +41,7 @@ class Event {
           date: map['date'],
           observation: map['observation'],
           petId: map['animal_id'],
+          updatedAt: map["updated_at"]
         );
       }
     }
@@ -53,6 +61,7 @@ class Event {
       "date": date,
       "observation": observation,
       "animal_id": petId,
+      'updated_at':updatedAt
     };
   }
 
