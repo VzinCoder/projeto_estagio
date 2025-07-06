@@ -14,7 +14,7 @@ class VaccineRepository implements IVaccineRepository{
   }
 
   @override
-  Future<int> deleteVaccine(int id) async {
+  Future<int> deleteVaccine(String id) async {
     return await db.delete(
       table, 
       where: "id = ?",
@@ -29,7 +29,7 @@ class VaccineRepository implements IVaccineRepository{
   }
 
   @override
-  Future<Vaccine?> getVaccineById(int id) async {
+  Future<Vaccine?> getVaccineById(String id) async {
     var result = await db.query(table, where: 'id = ?', whereArgs: [id]);
 
     if(result.isEmpty) return null;
@@ -38,16 +38,17 @@ class VaccineRepository implements IVaccineRepository{
   }
 
   @override
-  Future<List<Vaccine>> getVaccinesByPetId(int petId) async {
+  Future<List<Vaccine>> getVaccinesByPetId(String petId) async {
     var result = await db.query(table, where: 'animal_id = ?', whereArgs: [petId]);
 
     return result.map((vaccineMap)=> Vaccine.fromMap(vaccineMap)).toList();
   }
   @override
   Future<int> updateVaccine(Vaccine vaccine) {
-    if (vaccine.id == null) {
-      throw Exception("Cannot update vaccine without ID");
-    }
+    // impossivel uma vacina não ter id.
+    // if (vaccine.id == null) {
+    //   throw Exception("Cannot update vaccine without ID");
+    // }
 
     return db.update(
       table, 

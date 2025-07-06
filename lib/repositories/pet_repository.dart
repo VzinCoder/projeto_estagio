@@ -8,7 +8,7 @@ class PetRepository implements IPetRepository{
   PetRepository(this.db);
 
   @override
-  Future<int> deletePet (int id)  {
+  Future<int> deletePet (String id)  {
     return db.delete('animals',where:'id = ?',whereArgs: [id]);
   }
 
@@ -19,7 +19,7 @@ class PetRepository implements IPetRepository{
   }
 
   @override
-  Future<Pet?> getPetById(int id) async {
+  Future<Pet?> getPetById(String id) async {
     final result = await db.query('animals', where: 'id = ?', whereArgs: [id]);
     if (result.isEmpty) return null;
     return Pet.fromMap(result.first);
@@ -32,9 +32,10 @@ class PetRepository implements IPetRepository{
 
   @override
   Future<int> updatePet(Pet pet) {
-    if (pet.id == null) {
-      throw Exception("Cannot update pet without ID");
-    }
+    // É impossivel um pet não ter id.
+    // if (pet.id == null) {
+    //   throw Exception("Cannot update pet without ID");
+    // }
     return db.update('animals', pet.toMap(), where: 'id = ?', whereArgs: [pet.id]);
   }
 

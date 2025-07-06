@@ -8,7 +8,7 @@ class EventRepository implements IEventRepository {
   EventRepository(this.db);
 
   @override
-  Future<int> deleteEvent(int id) {
+  Future<int> deleteEvent(String id) {
     return db.delete('events', where: 'id = ?', whereArgs: [id]);
   }
 
@@ -19,7 +19,7 @@ class EventRepository implements IEventRepository {
   }
 
   @override
-  Future<Event?> getEventById(int id) async {
+  Future<Event?> getEventById(String id) async {
     final result = await db.query('events', where: 'id = ?', whereArgs: [id]);
     if (result.isEmpty) return null;
     return Event.fromMap(result.first);
@@ -32,9 +32,11 @@ class EventRepository implements IEventRepository {
 
   @override
   Future<int> updateEvent(Event event) {
-    if (event.id == null) {
-      throw Exception("Cannot update event without ID");
-    }
+
+    // impossivel um evento não ter id.
+    // if (event.id == null) {
+    //   throw Exception("Cannot update event without ID");
+    // }
     return db.update(
       'events',
       event.toMap(),
@@ -44,7 +46,7 @@ class EventRepository implements IEventRepository {
   }
 
   @override
-  Future<List<Event>> getEventsByPetId(int petId) async {
+  Future<List<Event>> getEventsByPetId(String petId) async {
     final result = await db.query(
       'events',
       where: 'pet_id = ?',
