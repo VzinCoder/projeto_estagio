@@ -41,7 +41,7 @@ class _PetVaccinesState extends State<PetVaccines> {
     if (i != -1) setState(() => _vaccines[i] = vaccine);
   }
 
-  void _deleteVaccine(int id) async {
+  void _deleteVaccine(String id) async {
     final i = _vaccines.indexWhere((v) => v.id == id);
     if (i == -1) return;
     await _repository.deleteVaccine(id);
