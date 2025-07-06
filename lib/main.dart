@@ -33,8 +33,8 @@ class MyApp extends StatelessWidget {
         //MyAppRoutes.petVaccines.routeName:(BuildContext context)=> PetVaccines(),
         MyAppRoutes.addPetVaccine.routeName: (BuildContext context) =>
             AddPetVaccine(),
-        MyAppRoutes.addPetEvent.routeName: (BuildContext context) =>
-            AddPetEvent(),
+        // MyAppRoutes.addPetEvent.routeName: (BuildContext context) =>
+        //     AddPetEvent(),
       },
     );
   }
