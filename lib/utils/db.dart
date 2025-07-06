@@ -55,7 +55,8 @@ class Db {
         name TEXT NOT NULL,
         type TEXT NOT NULL,
         breed TEXT NOT NULL,
-        date_of_birth TEXT NOT NULL
+        date_of_birth TEXT NOT NULL,
+        updated_at TEXT NOT NULL
       );
     ''');
 
@@ -66,6 +67,7 @@ class Db {
         name TEXT NOT NULL,
         application_date TEXT NOT NULL,
         next_dose_date TEXT,
+        updated_at TEXT NOT NULL,
         FOREIGN KEY (animal_id) REFERENCES animals(id) ON DELETE CASCADE
       );
     ''');
@@ -77,6 +79,7 @@ class Db {
         type TEXT NOT NULL,
         date TEXT NOT NULL,
         observation TEXT,
+        updated_at TEXT NOT NULL,
         FOREIGN KEY (animal_id) REFERENCES animals(id) ON DELETE CASCADE
       );
     ''');
