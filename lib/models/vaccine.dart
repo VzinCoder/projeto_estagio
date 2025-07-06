@@ -1,12 +1,24 @@
+import '../utils/injector.dart';
+import 'package:uuid/uuid.dart';
+
+Uuid uuid = getIt.get<Uuid>();
+
 class Vaccine {
-  int? id;
+  String id;
   String name;
   String dateApplication;
   String nextDateApplication;
-  int petId;
+  String petId;
 
   Vaccine({
-    this.id,
+    required this.name,
+    required this.dateApplication,
+    required this.nextDateApplication,
+    required this.petId,
+  }): id = uuid.v4();
+
+  Vaccine._withId({
+    required this.id,
     required this.name,
     required this.dateApplication,
     required this.nextDateApplication,
@@ -67,8 +79,19 @@ class Vaccine {
   }
 
   factory Vaccine.fromMap(Map<String, dynamic> map) {
+    if(map.containsKey('id')){
+      if(Uuid.isValidUUID(fromString: map['id'])){
+        return Vaccine._withId(
+          id: map['id'],
+          name: map['name'],
+          dateApplication: map['application_date'],
+          nextDateApplication: map['next_dose_date'],
+          petId: map['animal_id']
+        );
+      }
+    }
+
     return Vaccine(
-      id: map['id'],
       name: map['name'],
       dateApplication: map['application_date'],
       nextDateApplication: map['next_dose_date'],
@@ -78,12 +101,12 @@ class Vaccine {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
+      'id': id,
       'name': name,
       'application_date': dateApplication,
       'next_dose_date': nextDateApplication,
       'animal_id': petId,
     };
-    if (id != null) map['id'] = id;
     return map;
   }
 

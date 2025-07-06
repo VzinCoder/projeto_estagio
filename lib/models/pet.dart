@@ -1,15 +1,24 @@
+import "../utils/injector.dart";
+import 'package:uuid/uuid.dart';
 
-
+Uuid uuid = getIt.get<Uuid>();
 
 class Pet {
-  int? id;
+  String id;
   String name;
   String type;
   String breed;
   String dateOfBirth;
 
   Pet({
-    this.id,
+    required this.name,
+    required this.type,
+    required this.breed,
+    required this.dateOfBirth,
+  }): id = uuid.v4();
+
+  Pet._withId({
+    required this.id,
     required this.name,
     required this.type,
     required this.breed,
@@ -66,18 +75,29 @@ class Pet {
 
   Map<String,dynamic> toMap(){
     Map<String, dynamic> map = {
+      'id': id,
       'name': name,
       'type': type,
       'breed': breed,
       'date_of_birth': dateOfBirth,
     };
-    if (id != null) map['id'] = id;
     return map;
   }
 
   factory Pet.fromMap(Map<String, dynamic> map) {
+    if(map.containsKey('id')){
+      if(Uuid.isValidUUID(fromString: map['id'])){
+        return Pet._withId(
+          id: map['id'], 
+          name: map['name'], 
+          type: map['type'], 
+          breed: map['breed'], 
+          dateOfBirth: map['date_of_birth']
+        );
+      }
+    }
+
     return Pet(
-      id: map['id'],
       name: map['name'],
       type: map['type'],
       breed: map['breed'],
