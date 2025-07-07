@@ -1,15 +1,26 @@
-  import 'package:flutter/material.dart';
-  import 'package:projeto_estagio/pages/add_pet.dart';
-  import 'package:projeto_estagio/utils/injector.dart';
-  import '../repositories/pet_repository.dart';
-  import '../models/pet.dart';
-  import 'pet_details.dart'; // importe a tela de detalhes
+import 'package:flutter/material.dart';
+import 'package:projeto_estagio/pages/add_pet.dart';
+import 'package:projeto_estagio/utils/injector.dart';
+import '../repositories/pet_repository.dart';
+import '../models/pet.dart';
+import 'pet_details.dart';
+import './sync_page.dart';
 
-  class HomePage extends StatefulWidget {
-    const HomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
-    @override
-    State<HomePage> createState() => _HomePageState();
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final PetRepository repository = getIt<PetRepository>();
+  late Future<List<Pet>> _petsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _petsFuture = _getAllPets();
   }
 
   class _HomePageState extends State<HomePage> {
@@ -44,6 +55,32 @@
         ),
       );
     } 
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Meus Pets", style: TextStyle(color: Colors.white)),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.sync),
+            tooltip: 'Sincronizar',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SyncPage()),
+              );
+            },
+          ),
+        ],
+      ),
+      
+      body: Padding(
+        padding: EdgeInsetsGeometry.all(20),
+        child: FutureBuilder(
+          future: _petsFuture,
+          builder: (context, snapshot){
 
     Future<List<Pet>> _getAllPets() async {
       return await repository.getAllPets();
