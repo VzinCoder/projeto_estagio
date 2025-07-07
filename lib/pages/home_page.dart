@@ -23,38 +23,39 @@ class _HomePageState extends State<HomePage> {
     _petsFuture = _getAllPets();
   }
 
-  class _HomePageState extends State<HomePage> {
-    final PetRepository repository = getIt<PetRepository>();
-    late Future<List<Pet>> _petsFuture;
+  void _navigateToAddPet({Pet? pet}) async {
+    final bool? result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddPet(pet: pet),
+      ),
+    );
 
-    @override
-    void initState() {
-      super.initState();
+    if (result == true) {
+      setState(() {
+        _petsFuture = _getAllPets();
+      });
+    }
+  }
+  void _navigateToPetDetails({required Pet pet}) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PetDetails(pet: pet),
+      ),
+    );
+  } 
+
+  Future<List<Pet>> _getAllPets() async {
+    return await repository.getAllPets();
+  }
+
+  Future<void> _deletePet(int id) async {
+    await repository.deletePet(id);
+    setState(() {
       _petsFuture = _getAllPets();
-    }
-
-    void _navigateToAddPet({Pet? pet}) async {
-      final bool? result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => AddPet(pet: pet),
-        ),
-      );
-
-      if (result == true) {
-        setState(() {
-          _petsFuture = _getAllPets();
-        });
-      }
-    }
-    void _navigateToPetDetails({required Pet pet}) async {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PetDetails(pet: pet),
-        ),
-      );
-    } 
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,149 +83,125 @@ class _HomePageState extends State<HomePage> {
           future: _petsFuture,
           builder: (context, snapshot){
 
-    Future<List<Pet>> _getAllPets() async {
-      return await repository.getAllPets();
-    }
+            if(snapshot.connectionState == ConnectionState.waiting){
 
-    Future<void> _deletePet(int id) async {
-      await repository.deletePet(id);
-      setState(() {
-        _petsFuture = _getAllPets();
-      });
-    }
+              return CircularProgressIndicator();
 
-    @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("Meus Pets", style: TextStyle(color: Colors.white)),
-          centerTitle: true,
-        ),
-        body: Padding(
-          padding: EdgeInsetsGeometry.all(20),
-          child: FutureBuilder(
-            future: _petsFuture,
-            builder: (context, snapshot){
-
-              if(snapshot.connectionState == ConnectionState.waiting){
-
-                return CircularProgressIndicator();
-
-              }
-              
-              if(snapshot.hasError){
-
-                return Center(
-                  child: Text("Erro ao carregar pets: ${snapshot.error}"),
-                );
-
-              }
-
-              if(snapshot.hasData){
-                if(snapshot.data!.isEmpty) return CenterMsg(msg: "Nenhum Pet cadastrado");
-                
-                List<Pet> pets = snapshot.data!;
-
-                return ListView.builder(
-                  itemCount: pets.length,
-                  itemBuilder: (context, index){
-                    return PetCard(
-                      pet: pets[index],
-                      edit: _navigateToAddPet,
-                      delete: _deletePet,
-                      details: _navigateToPetDetails,
-                    );
-                  }
-                );
-              }
-
-              return CenterMsg(msg: "Não foi possivel recuperar pets do banco de dados");
             }
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            _navigateToAddPet();
-          },
-          child: Icon(Icons.add),
-        ),
-      );
-    }
-  }
+            
+            if(snapshot.hasError){
 
-  class PetCard extends StatelessWidget{
-    const PetCard(
-      {
-        super.key, 
-        required this.pet,
-        required this.edit,
-        required this.delete,
-        required this.details
-      }
+              return Center(
+                child: Text("Erro ao carregar pets: ${snapshot.error}"),
+              );
+
+            }
+
+            if(snapshot.hasData){
+              if(snapshot.data!.isEmpty) return CenterMsg(msg: "Nenhum Pet cadastrado");
+              
+              List<Pet> pets = snapshot.data!;
+
+              return ListView.builder(
+                itemCount: pets.length,
+                itemBuilder: (context, index){
+                  return PetCard(
+                    pet: pets[index],
+                    edit: _navigateToAddPet,
+                    delete: _deletePet,
+                    details: _navigateToPetDetails,
+                  );
+                }
+              );
+            }
+
+            return CenterMsg(msg: "Não foi possivel recuperar pets do banco de dados");
+          }
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _navigateToAddPet();
+        },
+        child: Icon(Icons.add),
+      ),
     );
+  }
+}
 
-    final Pet pet;
-    final void Function({required Pet pet}) edit;
-    final void Function(int id) delete;
-    final void Function({required Pet pet}) details;
+class PetCard extends StatelessWidget{
+  const PetCard(
+    {
+      super.key, 
+      required this.pet,
+      required this.edit,
+      required this.delete,
+      required this.details
+    }
+  );
 
-    @override
-    Widget build(BuildContext context) {
-      return Card(
-        elevation: 5,
-        child: ListTile(
-          contentPadding: EdgeInsets.fromLTRB(8, 6, 8, 6),
-          onTap: (){
-            details(pet: pet);
-          },
-          title: Text(
-            pet.name,
-            style: TextStyle(
-              fontWeight: FontWeight.w900
-            ),
-          ),
-          subtitle: Text(
-            pet.type
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(8),
-                  minimumSize: Size(40, 40) 
-                ),
-                onPressed: (){
-                  edit(pet: pet);
-                },
-                child: Icon(Icons.edit)
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(8),
-                  minimumSize: Size(40, 40) 
-                ),
-                onPressed: (){
-                  delete(pet.id!);
-                },
-                child: Icon(Icons.delete)
-              ),
-            ],
+  final Pet pet;
+  final void Function({required Pet pet}) edit;
+  final void Function(int id) delete;
+  final void Function({required Pet pet}) details;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 5,
+      child: ListTile(
+        contentPadding: EdgeInsets.fromLTRB(8, 6, 8, 6),
+        onTap: (){
+          details(pet: pet);
+        },
+        title: Text(
+          pet.name,
+          style: TextStyle(
+            fontWeight: FontWeight.w900
           ),
         ),
-      );
-    }
+        subtitle: Text(
+          pet.type
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(8),
+                minimumSize: Size(40, 40) 
+              ),
+              onPressed: (){
+                edit(pet: pet);
+              },
+              child: Icon(Icons.edit)
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(8),
+                minimumSize: Size(40, 40) 
+              ),
+              onPressed: (){
+                delete(pet.id!);
+              },
+              child: Icon(Icons.delete)
+            ),
+          ],
+        ),
+      ),
+    );
   }
+}
 
-  class CenterMsg extends StatelessWidget{
-    final String msg;
+class CenterMsg extends StatelessWidget{
+  final String msg;
 
-    const CenterMsg({super.key, required this.msg});
+  const CenterMsg({super.key, required this.msg});
 
-    @override
-    Widget build(BuildContext context) {
-      return Center(
-        child: Text(msg),
-      );
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(msg),
+    );
   }
+}

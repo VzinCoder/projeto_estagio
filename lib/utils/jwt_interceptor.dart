@@ -10,10 +10,7 @@ class JwtInterceptor extends Interceptor {
   JwtInterceptor(this.dio) : storage = const FlutterSecureStorage();
 
   @override
-  void onRequest(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
-  ) async {
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     if (options.extra['is_refresh_request'] == true) {
       handler.next(options);
       return;
@@ -42,7 +39,7 @@ class JwtInterceptor extends Interceptor {
       try {
         final newToken = await _getOrRefreshToken();
         originalRequest.headers['Authorization'] = 'Bearer $newToken';
-
+        
         final response = await dio.fetch(originalRequest);
         handler.resolve(response);
       } catch (e) {
@@ -75,18 +72,16 @@ class JwtInterceptor extends Interceptor {
     final refreshToken = await storage.read(key: 'refresh_token');
     if (refreshToken == null) {
       await _clearTokens();
-      throw DioException(
-        requestOptions: RequestOptions(path: '/auth/token/refresh/'),
-        error: 'Refresh token ausente. Usuário precisa logar novamente.',
-        type: DioExceptionType.cancel,
-      );
+      throw Exception('Refresh token ausente');
     }
 
     try {
       final response = await dio.post(
         'http://10.0.2.2:8000/auth/token/refresh/',
         data: {'refresh': refreshToken},
-        options: Options(extra: {'is_refresh_request': true}),
+        options: Options(
+          extra: {'is_refresh_request': true}, 
+        ),
       );
 
       if (response.statusCode == 200 && response.data['access'] != null) {
@@ -98,7 +93,6 @@ class JwtInterceptor extends Interceptor {
           requestOptions: response.requestOptions,
           response: response,
           type: DioExceptionType.badResponse,
-          error: 'Falha ao renovar o token. Status: ${response.statusCode}',
         );
       }
     } on DioException {
@@ -109,6 +103,5 @@ class JwtInterceptor extends Interceptor {
   Future<void> _clearTokens() async {
     await storage.delete(key: 'access_token');
     await storage.delete(key: 'refresh_token');
-    print('Tokens de autenticação limpos.');
   }
 }
