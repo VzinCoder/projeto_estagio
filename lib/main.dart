@@ -4,6 +4,7 @@ import "pages/home_page.dart";
 import "pages/add_pet.dart";
 import "pages/add_pet_vaccine.dart";
 import "pages/add_pet_event.dart";
+import "pages/login_page.dart";
 import "my_app_routes.dart";
 
 void main() async {
@@ -25,8 +26,9 @@ class MyApp extends StatelessWidget {
           iconTheme: IconThemeData(color: Colors.white),
         ),
       ),
-      initialRoute: MyAppRoutes.homePage.routeName,
+      initialRoute: MyAppRoutes.loginPage.routeName,
       routes: {
+        MyAppRoutes.loginPage.routeName: (BuildContext context) => LoginPage(),
         MyAppRoutes.homePage.routeName: (BuildContext context) => HomePage(),
         MyAppRoutes.addPet.routeName: (BuildContext context) => AddPet(),
         //MyAppRoutes.petDetails.routeName:(BuildContext context)=> PetDetails(),
