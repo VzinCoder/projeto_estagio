@@ -1,4 +1,5 @@
 enum MyAppRoutes{
+  loginPage(routeName: "login_page"),
   homePage(routeName: "home_page"),
   addPet(routeName: "add_pet"),
   petDetails(routeName: "pet_details"),
