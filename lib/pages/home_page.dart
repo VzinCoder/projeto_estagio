@@ -4,6 +4,7 @@ import 'package:projeto_estagio/utils/injector.dart';
 import '../repositories/pet_repository.dart';
 import '../models/pet.dart';
 import 'pet_details.dart'; // importe a tela de detalhes
+import './sync_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -62,6 +63,18 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text("Meus Pets", style: TextStyle(color: Colors.white)),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.sync),
+            tooltip: 'Sincronizar',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SyncPage()),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsetsGeometry.all(20),
