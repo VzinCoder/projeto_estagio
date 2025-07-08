@@ -51,7 +51,7 @@ class VaccineRepository implements IVaccineRepository{
     //   throw Exception("Cannot update vaccine without ID");
     // }
 
-    vaccine.updatedAt = DateParser.formatDate(DateTime.now());
+    vaccine.updatedAt = DateParser.formatDateISO8601(DateTime.now());
     return db.update(
       table, 
       vaccine.toMap(),

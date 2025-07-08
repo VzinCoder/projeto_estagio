@@ -38,7 +38,7 @@ class EventRepository implements IEventRepository {
     // if (event.id == null) {
     //   throw Exception("Cannot update event without ID");
     // }
-    event.updatedAt = DateParser.formatDate(DateTime.now());
+    event.updatedAt = DateParser.formatDateISO8601(DateTime.now());
     return db.update(
       'events',
       event.toMap(),

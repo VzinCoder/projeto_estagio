@@ -39,7 +39,7 @@ class PetRepository implements IPetRepository{
     //   throw Exception("Cannot update pet without ID");
     // }
 
-    pet.updatedAt = DateParser.formatDate(DateTime.now());
+    pet.updatedAt = DateParser.formatDateISO8601(DateTime.now());
     
     return db.update('animals', pet.toMap(), where: 'id = ?', whereArgs: [pet.id]);
   }
