@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class AuthService {
   final String _baseUrl = 'http://10.0.2.2:8000';
@@ -73,5 +74,41 @@ class AuthService {
     await _secureStorage.delete(key: 'access_token');
     await _secureStorage.delete(key: 'refresh_token');
     print('Tokens removidos. Usuário deslogado!');
+  }
+
+  Future<bool> isAuthenticated() async {
+    final access = await getAccessToken();
+
+    if (access != null && !JwtDecoder.isExpired(access)) {
+      return true;
+    }
+
+    return await refreshAccessToken();
+  }
+
+  Future<bool> refreshAccessToken() async {
+    final refresh = await _secureStorage.read(key: 'refresh_token');
+    if (refresh == null) return false;
+
+    try {
+      final response = await _loginDio.post(
+        '$_baseUrl/auth/token/refresh/',
+        data: {'refresh': refresh},
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+
+      if (response.statusCode == 200) {
+        final newAccess = response.data['access'];
+        if (newAccess != null) {
+          await _secureStorage.write(key: 'access_token', value: newAccess);
+          print('Novo access token obtido com sucesso!');
+          return true;
+        }
+      }
+      return false;
+    } on DioError catch (e) {
+      print('Erro ao tentar renovar token: ${e.response?.data ?? e.message}');
+      return false;
+    }
   }
 }

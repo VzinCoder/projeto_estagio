@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:projeto_estagio/pages/add_pet.dart';
+import 'package:projeto_estagio/pages/login_page.dart';
+import 'package:projeto_estagio/services/auth_services.dart';
 import 'package:projeto_estagio/utils/injector.dart';
 import '../repositories/pet_repository.dart';
 import '../models/pet.dart';
@@ -15,6 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final PetRepository repository = getIt<PetRepository>();
+  final AuthService authService = getIt<AuthService>();
   late Future<List<Pet>> _petsFuture;
 
   @override
@@ -26,9 +30,7 @@ class _HomePageState extends State<HomePage> {
   void _navigateToAddPet({Pet? pet}) async {
     final bool? result = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => AddPet(pet: pet),
-      ),
+      MaterialPageRoute(builder: (context) => AddPet(pet: pet)),
     );
 
     if (result == true) {
@@ -37,14 +39,13 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
+
   void _navigateToPetDetails({required Pet pet}) async {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => PetDetails(pet: pet),
-      ),
+      MaterialPageRoute(builder: (context) => PetDetails(pet: pet)),
     );
-  } 
+  }
 
   Future<List<Pet>> _getAllPets() async {
     return await repository.getAllPets();
@@ -55,6 +56,28 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _petsFuture = _getAllPets();
     });
+  }
+
+  Future<void> _handleNavigationSync() async {
+    final isAuth = await authService.isAuthenticated();
+
+    if (isAuth) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const SyncPage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Sessão expirada. Faça login novamente.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+    }
   }
 
   @override
@@ -68,10 +91,7 @@ class _HomePageState extends State<HomePage> {
             icon: const Icon(Icons.sync),
             tooltip: 'Sincronizar',
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SyncPage()),
-              );
+              _handleNavigationSync();
             },
           ),
         ],
@@ -80,42 +100,40 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsetsGeometry.all(20),
         child: FutureBuilder(
           future: _petsFuture,
-          builder: (context, snapshot){
-
-            if(snapshot.connectionState == ConnectionState.waiting){
-
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator();
-
             }
-            
-            if(snapshot.hasError){
 
+            if (snapshot.hasError) {
               return Center(
                 child: Text("Erro ao carregar pets: ${snapshot.error}"),
               );
-
             }
 
-            if(snapshot.hasData){
-              if(snapshot.data!.isEmpty) return CenterMsg(msg: "Nenhum Pet cadastrado");
-              
+            if (snapshot.hasData) {
+              if (snapshot.data!.isEmpty)
+                return CenterMsg(msg: "Nenhum Pet cadastrado");
+
               List<Pet> pets = snapshot.data!;
 
               return ListView.builder(
                 itemCount: pets.length,
-                itemBuilder: (context, index){
+                itemBuilder: (context, index) {
                   return PetCard(
                     pet: pets[index],
                     edit: _navigateToAddPet,
                     delete: _deletePet,
                     details: _navigateToPetDetails,
                   );
-                }
+                },
               );
             }
 
-            return CenterMsg(msg: "Não foi possivel recuperar pets do banco de dados");
-          }
+            return CenterMsg(
+              msg: "Não foi possivel recuperar pets do banco de dados",
+            );
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -128,16 +146,14 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class PetCard extends StatelessWidget{
-  const PetCard(
-    {
-      super.key, 
-      required this.pet,
-      required this.edit,
-      required this.delete,
-      required this.details
-    }
-  );
+class PetCard extends StatelessWidget {
+  const PetCard({
+    super.key,
+    required this.pet,
+    required this.edit,
+    required this.delete,
+    required this.details,
+  });
 
   final Pet pet;
   final void Function({required Pet pet}) edit;
@@ -150,40 +166,33 @@ class PetCard extends StatelessWidget{
       elevation: 5,
       child: ListTile(
         contentPadding: EdgeInsets.fromLTRB(8, 6, 8, 6),
-        onTap: (){
+        onTap: () {
           details(pet: pet);
         },
-        title: Text(
-          pet.name,
-          style: TextStyle(
-            fontWeight: FontWeight.w900
-          ),
-        ),
-        subtitle: Text(
-          pet.type
-        ),
+        title: Text(pet.name, style: TextStyle(fontWeight: FontWeight.w900)),
+        subtitle: Text(pet.type),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.all(8),
-                minimumSize: Size(40, 40) 
+                minimumSize: Size(40, 40),
               ),
-              onPressed: (){
+              onPressed: () {
                 edit(pet: pet);
               },
-              child: Icon(Icons.edit)
+              child: Icon(Icons.edit),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.all(8),
-                minimumSize: Size(40, 40) 
+                minimumSize: Size(40, 40),
               ),
-              onPressed: (){
+              onPressed: () {
                 delete(pet.id!);
               },
-              child: Icon(Icons.delete)
+              child: Icon(Icons.delete),
             ),
           ],
         ),
@@ -192,15 +201,13 @@ class PetCard extends StatelessWidget{
   }
 }
 
-class CenterMsg extends StatelessWidget{
+class CenterMsg extends StatelessWidget {
   final String msg;
 
   const CenterMsg({super.key, required this.msg});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(msg),
-    );
+    return Center(child: Text(msg));
   }
 }
