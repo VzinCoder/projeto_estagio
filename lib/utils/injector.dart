@@ -7,15 +7,20 @@ import 'package:sqflite/sqflite.dart';
 import 'package:dio/dio.dart';
 import './jwt_interceptor.dart';
 import 'package:uuid/uuid.dart';
+import '../services/auth_services.dart';
 
 final GetIt getIt = GetIt.instance;
 
 Future<void> setupLocator() async {
   final db = await Db().database;
+  final authService = AuthService();
   final dio = Dio();
+
   dio.interceptors.add(JwtInterceptor(dio));
 
   final uuid = Uuid();
+
+  getIt.registerSingleton<AuthService>(authService);
 
   getIt.registerSingleton<Dio>(dio);
 
