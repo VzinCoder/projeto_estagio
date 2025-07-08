@@ -20,7 +20,7 @@ class Event {
     required this.petId,
   }): id = uuid.v4()
   {
-    updatedAt = DateParser.formatDate(DateTime.now());
+    updatedAt = DateParser.formatDateISO8601(DateTime.now());
   }
 
   Event._withId({

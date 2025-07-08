@@ -19,7 +19,7 @@ class Pet {
     required this.dateOfBirth,
   }): id = uuid.v4()
   {
-    updatedAt = DateParser.formatDate(DateTime.now());
+    updatedAt = DateParser.formatDateISO8601(DateTime.now());
   }
 
   // se é necessário instanciar um pet com id então significa que ele já tem um updated_at.

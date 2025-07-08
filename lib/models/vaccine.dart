@@ -20,7 +20,7 @@ class Vaccine {
     required this.petId,
   }): id = uuid.v4()
   {
-    updatedAt = DateParser.formatDate(DateTime.now());
+    updatedAt = DateParser.formatDateISO8601(DateTime.now());
   }
 
   // se uma vacina já tem id é pq o campo update_at já foi inicializado.
