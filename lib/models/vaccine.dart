@@ -1,74 +1,68 @@
+import 'package:projeto_estagio/utils/date_parser.dart';
+
+import '../utils/injector.dart';
+import 'package:uuid/uuid.dart';
+
+Uuid uuid = getIt.get<Uuid>();
+
 class Vaccine {
-  int? id;
+  String id;
   String name;
   String dateApplication;
   String nextDateApplication;
-  int petId;
+  String petId;
+  late String updatedAt;
 
   Vaccine({
-    this.id,
     required this.name,
     required this.dateApplication,
     required this.nextDateApplication,
     required this.petId,
+  }): id = uuid.v4()
+  {
+    updatedAt = DateParser.formatDateISO8601(DateTime.now());
+  }
+
+  // se uma vacina já tem id é pq o campo update_at já foi inicializado.
+  Vaccine._withId({
+    required this.id,
+    required this.name,
+    required this.dateApplication,
+    required this.nextDateApplication,
+    required this.petId,
+    required this.updatedAt
   });
 
-  DateTime? get dateApplicationDateTime => _parseDate(dateApplication);
-  DateTime? get nextDateApplicationDateTime => _parseDate(nextDateApplication);
+  DateTime? get dateApplicationDateTime => DateParser.parseDate(dateApplication);
+  DateTime? get nextDateApplicationDateTime => DateParser.parseDate(nextDateApplication);
 
   set dateApplicationDateTime(DateTime? date) {
     if (date != null) {
-      dateApplication = _formatDate(date);
+      dateApplication = DateParser.formatDate(date);
     }
   }
 
   set nextDateApplicationDateTime(DateTime? date) {
     if (date != null) {
-      nextDateApplication = _formatDate(date);
-    }
-  }
-
-  DateTime? _parseDate(String dateString) {
-    if (!_isValidDateFormat(dateString)) return null;
-    try {
-      final parts = dateString.split('/');
-      final day = int.parse(parts[0]);
-      final month = int.parse(parts[1]);
-      final year = int.parse(parts[2]);
-      return DateTime(year, month, day);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  String _formatDate(DateTime date) {
-    final day = date.day.toString().padLeft(2, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    final year = date.year.toString();
-    return "$day/$month/$year";
-  }
-
-  bool _isValidDateFormat(String dateString) {
-    final parts = dateString.split('/');
-    if (parts.length != 3) return false;
-
-    final day = int.tryParse(parts[0]);
-    final month = int.tryParse(parts[1]);
-    final year = int.tryParse(parts[2]);
-
-    if (day == null || month == null || year == null) return false;
-
-    try {
-      final date = DateTime(year, month, day);
-      return date.day == day && date.month == month && date.year == year;
-    } catch (_) {
-      return false;
+      nextDateApplication = DateParser.formatDate(date);
     }
   }
 
   factory Vaccine.fromMap(Map<String, dynamic> map) {
+    if(map.containsKey('id')){
+      if(Uuid.isValidUUID(fromString: map['id'])){
+        return Vaccine._withId(
+          id: map['id'],
+          name: map['name'],
+          dateApplication: map['application_date'],
+          nextDateApplication: map['next_dose_date'],
+          petId: map['animal_id'],
+          updatedAt: map['updated_at']
+        );
+      }
+    }
+
     return Vaccine(
-      id: map['id'],
       name: map['name'],
       dateApplication: map['application_date'],
       nextDateApplication: map['next_dose_date'],
@@ -78,12 +72,13 @@ class Vaccine {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
+      'id': id,
       'name': name,
       'application_date': dateApplication,
       'next_dose_date': nextDateApplication,
       'animal_id': petId,
+      'updated_at':updatedAt
     };
-    if (id != null) map['id'] = id;
     return map;
   }
 

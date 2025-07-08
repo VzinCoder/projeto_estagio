@@ -6,6 +6,7 @@ import 'package:projeto_estagio/utils/db.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:dio/dio.dart';
 import './jwt_interceptor.dart';
+import 'package:uuid/uuid.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -14,9 +15,13 @@ Future<void> setupLocator() async {
   final dio = Dio();
   dio.interceptors.add(JwtInterceptor(dio));
 
+  final uuid = Uuid();
+
   getIt.registerSingleton<Dio>(dio);
 
   getIt.registerSingleton<Database>(db);
+
+  getIt.registerSingleton<Uuid>(uuid);
 
   getIt.registerLazySingleton<PetRepository>(
     () => PetRepository(getIt<Database>()),

@@ -1,4 +1,5 @@
 import "package:projeto_estagio/models/vaccine.dart";
+import "package:projeto_estagio/utils/date_parser.dart";
 import "package:sqflite/sqflite.dart";
 import "i_vaccine_repository.dart";
 
@@ -7,14 +8,14 @@ class VaccineRepository implements IVaccineRepository{
   final String table = "vaccines";
   VaccineRepository(this.db);
 
-
+  // se a vacina acabou de ser criada então o updated_at já foi inicializado.
   @override
   Future<int> insertVaccine(Vaccine vaccine) async {
     return await db.insert(table, vaccine.toMap());
   }
 
   @override
-  Future<int> deleteVaccine(int id) async {
+  Future<int> deleteVaccine(String id) async {
     return await db.delete(
       table, 
       where: "id = ?",
@@ -29,7 +30,7 @@ class VaccineRepository implements IVaccineRepository{
   }
 
   @override
-  Future<Vaccine?> getVaccineById(int id) async {
+  Future<Vaccine?> getVaccineById(String id) async {
     var result = await db.query(table, where: 'id = ?', whereArgs: [id]);
 
     if(result.isEmpty) return null;
@@ -38,17 +39,19 @@ class VaccineRepository implements IVaccineRepository{
   }
 
   @override
-  Future<List<Vaccine>> getVaccinesByPetId(int petId) async {
+  Future<List<Vaccine>> getVaccinesByPetId(String petId) async {
     var result = await db.query(table, where: 'animal_id = ?', whereArgs: [petId]);
 
     return result.map((vaccineMap)=> Vaccine.fromMap(vaccineMap)).toList();
   }
   @override
   Future<int> updateVaccine(Vaccine vaccine) {
-    if (vaccine.id == null) {
-      throw Exception("Cannot update vaccine without ID");
-    }
+    // impossivel uma vacina não ter id.
+    // if (vaccine.id == null) {
+    //   throw Exception("Cannot update vaccine without ID");
+    // }
 
+    vaccine.updatedAt = DateParser.formatDateISO8601(DateTime.now());
     return db.update(
       table, 
       vaccine.toMap(),

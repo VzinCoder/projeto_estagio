@@ -39,16 +39,19 @@ class _AddPetState extends State<AddPet> {
     return id;
   }
 
-  Future<int> _updatePet(int petId) async {
-    Pet pet = Pet(
-      id: petId,
-      name: name.text,
-      type: type.text,
-      breed: breed.text,
-      dateOfBirth: dateOfBirth.text,
-    );
+  Future<int> _updatePet(String petId) async {
+    var petMap = {
+      'id':petId,
+      'name': name.text,
+      'type': type.text,
+      'breed': breed.text,
+      'date_of_birth': dateOfBirth.text,
+      'updated_at': widget.pet!.updatedAt
+    };
 
-    int id = await petRepository.updatePet(pet);
+    Pet updatedPet = Pet.fromMap(petMap);
+
+    int id = await petRepository.updatePet(updatedPet);
 
     return id;
   }
@@ -108,7 +111,7 @@ class _AddPetState extends State<AddPet> {
                     ),
                   );
                 } else {
-                  await _updatePet(widget.pet!.id!);
+                  await _updatePet(widget.pet!.id);
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text("Pet atualizado com sucesso!"),
@@ -121,7 +124,7 @@ class _AddPetState extends State<AddPet> {
                 Navigator.pop(context, true);
               },
               child: Text('Salvar')
-            )
+            ),
           ],
         ),
       ),

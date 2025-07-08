@@ -51,32 +51,35 @@ class Db {
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE animals (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
         type TEXT NOT NULL,
         breed TEXT NOT NULL,
-        date_of_birth TEXT NOT NULL
+        date_of_birth TEXT NOT NULL,
+        updated_at TEXT NOT NULL
       );
     ''');
 
     await db.execute('''
       CREATE TABLE vaccines (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        animal_id INTEGER NOT NULL,
+        id TEXT PRIMARY KEY,
+        animal_id TEXT NOT NULL,
         name TEXT NOT NULL,
         application_date TEXT NOT NULL,
         next_dose_date TEXT,
+        updated_at TEXT NOT NULL,
         FOREIGN KEY (animal_id) REFERENCES animals(id) ON DELETE CASCADE
       );
     ''');
 
     await db.execute('''
       CREATE TABLE events (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        animal_id INTEGER NOT NULL,
+        id TEXT PRIMARY KEY,
+        animal_id TEXT NOT NULL,
         type TEXT NOT NULL,
         date TEXT NOT NULL,
         observation TEXT,
+        updated_at TEXT NOT NULL,
         FOREIGN KEY (animal_id) REFERENCES animals(id) ON DELETE CASCADE
       );
     ''');

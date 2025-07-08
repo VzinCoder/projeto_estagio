@@ -74,8 +74,7 @@ class _AddPetVaccineState extends State<AddPetVaccine> {
       petId: widget.pet!.id!,
     );
 
-    final int newId = await vaccineRepository.insertVaccine(newVaccine);
-    newVaccine.id = newId;
+    await vaccineRepository.insertVaccine(newVaccine);
 
     ScaffoldMessenger.of(
       context,

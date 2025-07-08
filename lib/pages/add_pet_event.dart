@@ -6,9 +6,9 @@ import "../models/event.dart";
 
 class AddPetEvent extends StatefulWidget {
   final Event? event;
-  final int? petId;
+  final String petId;
 
-  const AddPetEvent({super.key, this.event, this.petId});
+  const AddPetEvent({super.key, this.event, required this.petId});
 
   @override
   State<AddPetEvent> createState() {
@@ -20,7 +20,6 @@ class _AddPetEventState extends State<AddPetEvent> {
   late final TextEditingController nameController;
   late final TextEditingController dateController;
   late final TextEditingController descriptionController;
-  late final int petId;
 
   late final bool isEditing;
   final EventRepository eventRepository = getIt<EventRepository>();
@@ -30,7 +29,7 @@ class _AddPetEventState extends State<AddPetEvent> {
       type: nameController.text,
       date: dateController.text,
       observation: descriptionController.text,
-      petId: petId,
+      petId: widget.petId,
     );
 
     int id = await eventRepository.insertEvent(event);
@@ -38,13 +37,14 @@ class _AddPetEventState extends State<AddPetEvent> {
   }
 
   Future<int> _updateEvent() async {
-    Event event = Event(
-      id: widget.event?.id ?? 0,
-      type: nameController.text,
-      date: dateController.text,
-      observation: descriptionController.text,
-      petId: petId,
-    );
+    var eventMap = {
+      'id': widget.event!.id,
+      'type':nameController.text,
+      'date':dateController.text,
+      'observation': descriptionController.text,
+      'petId': widget.petId,
+    };
+    Event event = Event.fromMap(eventMap);
 
     return await eventRepository.updateEvent(event);
   }
@@ -59,7 +59,6 @@ class _AddPetEventState extends State<AddPetEvent> {
     );
 
     isEditing = widget.event != null;
-    petId = widget.event?.petId ?? widget.petId!;
   }
 
   Future<void> _selectDate(TextEditingController controller) async {

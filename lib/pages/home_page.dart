@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
     return await repository.getAllPets();
   }
 
-  Future<void> _deletePet(int id) async {
+  Future<void> _deletePet(String id) async {
     await repository.deletePet(id);
     setState(() {
       _petsFuture = _getAllPets();
@@ -142,7 +142,7 @@ class PetCard extends StatelessWidget{
 
   final Pet pet;
   final void Function({required Pet pet}) edit;
-  final void Function(int id) delete;
+  final void Function(String id) delete;
   final void Function({required Pet pet}) details;
 
   @override

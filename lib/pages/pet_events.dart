@@ -6,7 +6,7 @@ import '../pages/event_details.dart';
 import 'package:projeto_estagio/utils/injector.dart';
 
 class PetEvents extends StatefulWidget {
-  final int petId;
+  final String petId;
   const PetEvents({super.key, required this.petId});
 
   @override
@@ -21,7 +21,7 @@ class _PetEventsState extends State<PetEvents> {
     return allEvents.where((event) => event.petId == widget.petId).toList();
   }
 
-  Future<int> _deleteEvent(int id) async {
+  Future<int> _deleteEvent(String id) async {
     return await _repository.deleteEvent(id);
   }
 
@@ -97,7 +97,7 @@ class _PetEventsState extends State<PetEvents> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            AddPetEvent(event: event),
+                                            AddPetEvent(event: event, petId: widget.petId),
                                       ),
                                     );
                                     setState(() {});
