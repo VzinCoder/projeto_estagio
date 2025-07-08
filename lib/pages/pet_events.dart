@@ -156,7 +156,7 @@ class _PetEventsState extends State<PetEvents> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AddPetEvent(petId: widget.petId!),
+              builder: (context) => AddPetEvent(petId: widget.petId),
             ),
           ).then((_) => setState(() {}));
         },
