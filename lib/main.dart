@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
           iconTheme: IconThemeData(color: Colors.white),
         ),
       ),
-      initialRoute: MyAppRoutes.loginPage.routeName,
+      initialRoute: MyAppRoutes.homePage.routeName,
       routes: {
         MyAppRoutes.loginPage.routeName: (BuildContext context) => LoginPage(),
         MyAppRoutes.homePage.routeName: (BuildContext context) => HomePage(),

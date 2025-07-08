@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _isLoading = false;
     });
-
+    
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Login realizado com sucesso!')),
