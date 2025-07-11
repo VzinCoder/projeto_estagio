@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_estagio/pages/pet_events.dart';
 import 'package:projeto_estagio/pages/pet_vaccines.dart';
 import '../models/pet.dart';
+import '../pages/report_page.dart';
 
 class PetDetails extends StatelessWidget {
   final Pet pet;
@@ -77,6 +78,22 @@ class PetDetails extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => PetEvents(petId: pet.id!),
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(height: 12),
+                _buildStyledButton(
+                  context,
+                  icon: Icons.description,
+                  label: "Gerar Relatório",
+                  color: Colors.blueAccent,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ReportPage(selectedPetIds: [pet.id]),
                       ),
                     );
                   },
