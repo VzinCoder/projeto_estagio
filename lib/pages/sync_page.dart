@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_estagio/pages/home_page.dart';
+import 'package:projeto_estagio/repositories/api_repository.dart';
+import '../utils/injector.dart';
 
 class SyncPage extends StatefulWidget {
   const SyncPage({super.key});
@@ -13,6 +16,7 @@ class _SyncPageState extends State<SyncPage> {
   bool isInitialized = false;
   bool _isDownloading = false;
   bool _isUploading = false;
+  final ApiRepository apiRepository = getIt.get<ApiRepository>();
 
   @override
   void initState() {
@@ -43,8 +47,14 @@ class _SyncPageState extends State<SyncPage> {
   }
 
   Future<Map<String, int>> _fetchDownloadUpdates() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    return {'animals': 2, 'events': 4, 'vaccines': 1};
+    final response = await apiRepository.checkDownloadUpdates();
+
+    if(response is Map){
+      if(response['has_updates']) return Map.castFrom<dynamic, dynamic, String, int>(response['update_counts']);
+      
+      return {};
+    }
+    return {};
   }
 
   Future<Map<String, int>> _fetchPendingUploads() async {
@@ -77,13 +87,16 @@ class _SyncPageState extends State<SyncPage> {
     } finally {
       if (mounted) {
         setState(() => _isDownloading = false);
+        // fecha o loading dialog
+        Navigator.of(context).pop();
+        // fecha a tela atual
         Navigator.of(context).pop();
       }
     }
   }
 
   Future<void> _performDownload() async {
-    await Future.delayed(const Duration(seconds: 2));
+     await apiRepository.downloadData();
   }
 
   Future<void> _startUpload() async {
