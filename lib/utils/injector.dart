@@ -1,7 +1,9 @@
 import 'package:get_it/get_it.dart';
+import 'package:projeto_estagio/repositories/api_repository.dart';
 import 'package:projeto_estagio/repositories/event_repository.dart';
 import 'package:projeto_estagio/repositories/pet_repository.dart';
 import 'package:projeto_estagio/repositories/vaccine_repository.dart';
+import 'package:projeto_estagio/services/api_services.dart';
 import 'package:projeto_estagio/utils/db.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:dio/dio.dart';
@@ -38,5 +40,14 @@ Future<void> setupLocator() async {
   
   getIt.registerLazySingleton<EventRepository>(
     () => EventRepository(getIt<Database>()),
+  );
+
+  getIt.registerLazySingleton<ApiRepository>(
+    ()=> ApiRepository(
+      petRepository: getIt.get<PetRepository>(), 
+      vaccineRepository: getIt.get<VaccineRepository>(), 
+      eventRepository: getIt.get<EventRepository>(), 
+      dioClient: DioClient()
+    )
   );
 }
