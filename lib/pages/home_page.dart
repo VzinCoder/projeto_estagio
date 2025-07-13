@@ -62,10 +62,13 @@ class _HomePageState extends State<HomePage> {
     final isAuth = await authService.isAuthenticated();
 
     if (isAuth) {
-      Navigator.push(
+      await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const SyncPage()),
       );
+      setState(() {
+        _petsFuture = _getAllPets();
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
