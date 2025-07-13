@@ -70,7 +70,10 @@ class _AddPetEventState extends State<AddPetEvent> {
     );
 
     if (date != null) {
-      controller.text = '${date.day}/${date.month}/${date.year}';
+      final dayFormatted = date.day.toString().padLeft(2, '0');
+      final monthFormatted = date.month.toString().padLeft(2, '0');
+      final year = date.year.toString();
+      controller.text = "$year-$monthFormatted-$dayFormatted";
     }
   }
 

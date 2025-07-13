@@ -23,7 +23,11 @@ class CustomTextFormField extends StatelessWidget{
       lastDate: DateTime(2100)
     );
     if(date != null){
-      controller.text = "${date.day.toString().padLeft(2,"0")}/${date.month.toString().padLeft(2,"0")}/${date.year}";
+      String year = date.year.toString();
+      String month = date.month.toString().padLeft(2, "0");
+      String day = date.day.toString().padLeft(2, "0");
+      
+      controller.text = "$year-$month-$day";
     }
   }
 
