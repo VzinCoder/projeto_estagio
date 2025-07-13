@@ -84,7 +84,7 @@ class JwtInterceptor extends Interceptor {
 
     try {
       final response = await dio.post(
-        'http://10.0.2.2:8000/auth/token/refresh/',
+        'http://192.168.1.107:8000/auth/token/refresh/',
         data: {'refresh': refreshToken},
         options: Options(extra: {'is_refresh_request': true}),
       );
