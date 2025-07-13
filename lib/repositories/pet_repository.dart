@@ -33,13 +33,18 @@ class PetRepository implements IPetRepository{
   }
 
   @override
-  Future<int> updatePet(Pet pet) {
+  Future<int> updatePet(
+    Pet pet,
+    {
+      remainUpdatedAt = false
+    }
+  ) {
     // É impossivel um pet não ter id.
     // if (pet.id == null) {
     //   throw Exception("Cannot update pet without ID");
     // }
 
-    pet.updatedAt = DateParser.formatDateISO8601(DateTime.now());
+    if(!remainUpdatedAt) pet.updatedAt = DateParser.formatDateISO8601(DateTime.now());
     
     return db.update('animals', pet.toMap(), where: 'id = ?', whereArgs: [pet.id]);
   }

@@ -45,13 +45,18 @@ class VaccineRepository implements IVaccineRepository{
     return result.map((vaccineMap)=> Vaccine.fromMap(vaccineMap)).toList();
   }
   @override
-  Future<int> updateVaccine(Vaccine vaccine) {
+  Future<int> updateVaccine(
+    Vaccine vaccine,
+    {
+      remainUpdatedAt = false
+    }
+  ) {
     // impossivel uma vacina não ter id.
     // if (vaccine.id == null) {
     //   throw Exception("Cannot update vaccine without ID");
     // }
 
-    vaccine.updatedAt = DateParser.formatDateISO8601(DateTime.now());
+    if(!remainUpdatedAt) vaccine.updatedAt = DateParser.formatDateISO8601(DateTime.now());
     return db.update(
       table, 
       vaccine.toMap(),
