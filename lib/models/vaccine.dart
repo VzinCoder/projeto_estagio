@@ -9,14 +9,14 @@ class Vaccine {
   String id;
   String name;
   String dateApplication;
-  String nextDateApplication;
+  String? nextDateApplication;
   String petId;
   late String updatedAt;
 
   Vaccine({
     required this.name,
     required this.dateApplication,
-    required this.nextDateApplication,
+    this.nextDateApplication,
     required this.petId,
   }): id = uuid.v4()
   {
@@ -28,13 +28,17 @@ class Vaccine {
     required this.id,
     required this.name,
     required this.dateApplication,
-    required this.nextDateApplication,
+    this.nextDateApplication,
     required this.petId,
     required this.updatedAt
   });
 
   DateTime? get dateApplicationDateTime => DateParser.parseDate(dateApplication);
-  DateTime? get nextDateApplicationDateTime => DateParser.parseDate(nextDateApplication);
+  DateTime? get nextDateApplicationDateTime{
+    if(nextDateApplication != null) return DateParser.parseDate(nextDateApplication!);
+
+    return null;
+  } 
 
   set dateApplicationDateTime(DateTime? date) {
     if (date != null) {
@@ -75,15 +79,17 @@ class Vaccine {
       'id': id,
       'name': name,
       'application_date': dateApplication,
-      'next_dose_date': nextDateApplication,
       'animal_id': petId,
       'updated_at':updatedAt
     };
+
+    if(nextDateApplication != null) map['next_dose_date'] = nextDateApplication;
+    
     return map;
   }
 
   @override
   String toString() {
-    return 'Vaccine {id: $id, name: $name, dateApplication: $dateApplication, nextDateApplication: $nextDateApplication, petId: $petId}';
+    return 'Vaccine {id: $id, name: $name, dateApplication: $dateApplication, nextDateApplication: ${nextDateApplication ?? 'was not provided'}, petId: $petId}';
   }
 }
