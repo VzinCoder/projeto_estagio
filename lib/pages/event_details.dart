@@ -44,7 +44,7 @@ class EventDetails extends StatelessWidget {
                     SizedBox(height: 16),
                     _buildDetailRow("Nome", event.type),
                     _buildDetailRow("Data", event.date),
-                    _buildDetailRow("Descrição", event.observation),
+                    _buildDetailRow("Descrição", event.observation ?? 'Nenhuma descrição foi fornecida'),
                   ],
                 ),
               ),

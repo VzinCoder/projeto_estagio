@@ -52,7 +52,7 @@ class _AddPetVaccineState extends State<AddPetVaccine> {
   void save() async {
     final name = nameController.text;
     final dateApp = dateAplicationController.text;
-    final nextDate = dateNextController.text;
+    final nextDate = dateNextController.text == '' ? null: dateNextController.text;
 
     if (isEditing) {
       final updated = widget.vaccine!;

@@ -28,7 +28,7 @@ class _AddPetEventState extends State<AddPetEvent> {
     Event event = Event(
       type: nameController.text,
       date: dateController.text,
-      observation: descriptionController.text,
+      observation: descriptionController.text == '' ? null : descriptionController.text,
       petId: widget.petId,
     );
 
@@ -41,7 +41,7 @@ class _AddPetEventState extends State<AddPetEvent> {
       'id': widget.event!.id,
       'type':nameController.text,
       'date':dateController.text,
-      'observation': descriptionController.text,
+      'observation': descriptionController.text == '' ? null : descriptionController.text,
       'petId': widget.petId,
     };
     Event event = Event.fromMap(eventMap);
