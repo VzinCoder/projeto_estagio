@@ -298,11 +298,14 @@ class ApiRepository {
       Pet pet = Pet.fromMap(petMap);
 
       Pet? petFoundFromDb; 
-      allPetsFromDb.map(
-        (pet){
-          if(pet.id == petData['id']) petFoundFromDb = pet;
-        } 
-      );
+
+      try{
+        petFoundFromDb = allPetsFromDb.firstWhere(
+          (pet) => pet.id == petData['id']
+        );
+      }catch(_){
+        petFoundFromDb = null;
+      }
 
       if(petFoundFromDb != null){
         petRepository.updatePet(
@@ -331,14 +334,16 @@ class ApiRepository {
       };
 
       Vaccine vaccine = Vaccine.fromMap(vaccineMap);
-
-      Vaccine? vaccineFoundFromDb; 
-      allVaccinesFromDb.map(
-        (vaccine){
-          if(vaccine.id == vaccineData['id']) vaccineFoundFromDb = vaccine;
-        } 
-      );
-
+      Vaccine? vaccineFoundFromDb;
+      
+      try{
+        vaccineFoundFromDb = allVaccinesFromDb.firstWhere(
+          (vaccine) => vaccine.id == vaccineData['id']
+        );
+      }catch(_){
+        vaccineFoundFromDb = null;
+      }
+      
       if(vaccineFoundFromDb != null){
         vaccineRepository.updateVaccine(
           vaccine,
@@ -368,11 +373,15 @@ class ApiRepository {
       Event event = Event.fromMap(eventMap);
 
       Event? eventFoundFromDb; 
-      allEventsFromDb.map(
-        (event){
-          if(event.id == eventData['id']) eventFoundFromDb = event;
-        } 
-      );
+
+      try{
+        eventFoundFromDb = allEventsFromDb.firstWhere(
+          (event) => event.id == eventData['id']
+        );
+      }catch(_){
+        eventFoundFromDb = null;
+      }
+      
 
       if(eventFoundFromDb != null){
         eventRepository.updateEvent(
