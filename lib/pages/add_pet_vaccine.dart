@@ -45,14 +45,14 @@ class _AddPetVaccineState extends State<AddPetVaccine> {
       final dayFormatted = date.day.toString().padLeft(2, '0');
       final monthFormatted = date.month.toString().padLeft(2, '0');
       final year = date.year.toString();
-      controller.text = "$dayFormatted/$monthFormatted/$year";
+      controller.text = "$year-$monthFormatted-$dayFormatted";
     }
   }
 
   void save() async {
     final name = nameController.text;
     final dateApp = dateAplicationController.text;
-    final nextDate = dateNextController.text;
+    final nextDate = dateNextController.text == '' ? null: dateNextController.text;
 
     if (isEditing) {
       final updated = widget.vaccine!;

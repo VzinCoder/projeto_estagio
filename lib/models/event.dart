@@ -9,14 +9,14 @@ class Event {
   String id;
   String type;
   String date;
-  String observation;
+  String? observation;
   String petId;
   late String updatedAt;
 
   Event({
     required this.type,
     required this.date,
-    required this.observation,
+    this.observation,
     required this.petId,
   }): id = uuid.v4()
   {
@@ -27,7 +27,7 @@ class Event {
     required this.id,
     required this.type,
     required this.date,
-    required this.observation,
+    this.observation,
     required this.petId,
     required this.updatedAt
   });
@@ -55,18 +55,21 @@ class Event {
   }
 
   Map<String, dynamic> toMap() {
-    return {
+    Map<String,dynamic> map = {
       "id":id,
       "type": type,
       "date": date,
-      "observation": observation,
       "animal_id": petId,
       'updated_at':updatedAt
     };
+
+    if(observation != null) map['observation'] = observation;
+
+    return map;
   }
 
   @override
   String toString() {
-    return 'Event {id: $id, type: $type, date: $date, observation: $observation, petId: $petId}';
+    return 'Event {id: $id, type: $type, date: $date, observation: ${observation ?? 'was not provided'}, petId: $petId}';
   }
 }

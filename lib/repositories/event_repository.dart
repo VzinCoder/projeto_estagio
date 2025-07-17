@@ -32,13 +32,18 @@ class EventRepository implements IEventRepository {
   }
 
   @override
-  Future<int> updateEvent(Event event) {
+  Future<int> updateEvent(
+    Event event,
+    {
+      remainUpdatedAt = false
+    }
+  ) {
 
     // impossivel um evento não ter id.
     // if (event.id == null) {
     //   throw Exception("Cannot update event without ID");
     // }
-    event.updatedAt = DateParser.formatDateISO8601(DateTime.now());
+    if(!remainUpdatedAt) event.updatedAt = DateParser.formatDateISO8601(DateTime.now());
     return db.update(
       'events',
       event.toMap(),
