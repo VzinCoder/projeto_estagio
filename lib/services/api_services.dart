@@ -4,7 +4,7 @@ import '../utils/injector.dart';
 class DioClient{
 
   final Dio dio = getIt.get<Dio>();
-  final _baseUrl = 'http://192.168.1.107:8000';
+  final _baseUrl = 'http://10.0.2.2:8000';
   
   static DioClient? _instance;
 

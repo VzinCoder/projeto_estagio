@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class AuthService {
-  final String _baseUrl = 'http://192.168.1.107:8000';
+  final String _baseUrl = 'http://10.0.2.2:8000';
   final String _loginEndpoint = '/auth/token/';
 
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
