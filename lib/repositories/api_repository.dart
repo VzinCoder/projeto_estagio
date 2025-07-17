@@ -232,6 +232,8 @@ class ApiRepository {
       map: uploadData
     );
 
+    if(response is String) return response;
+
     if(response['statusCode'] == 200) lastUploadDateSetter = DateParser.formatDateISO8601(DateTime.now());
     
     return response;
@@ -324,7 +326,7 @@ class ApiRepository {
         "updated_at": vaccineData['updated_at'],
         "name": vaccineData['name'],
         "application_date": vaccineData['application_date'],
-        "next_dose_date": vaccineData['next_dose_date'],
+        "next_dose_date": vaccineData['next_dose_date'], // pode vir null
         "animal_id": vaccineData['animal']
       };
 
@@ -359,7 +361,7 @@ class ApiRepository {
         "updated_at": eventData['updated_at'],
         "type": eventData['type'],
         "date": eventData['date'],
-        "observation": eventData['observation'],
+        "observation": eventData['observation'], // pode vir null
         "animal_id": eventData['animal']
       };
 
