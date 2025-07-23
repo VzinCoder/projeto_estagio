@@ -9,6 +9,8 @@ import 'package:projeto_estagio/repositories/vaccine_repository.dart';
 import 'package:projeto_estagio/utils/injector.dart';
 import 'package:projeto_estagio/utils/date_parser.dart';
 import 'package:pdf/pdf.dart';
+import 'package:flutter/material.dart' as material;
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
@@ -81,8 +83,231 @@ class _ReportPageState extends State<ReportPage> {
     }
   }
 
+  pw.Widget PetTableInfo(Pet pet) {
+    return pw.Table(
+      border: pw.TableBorder.all(color: PdfColors.grey),
+      columnWidths: const {0: pw.FlexColumnWidth(3), 1: pw.FlexColumnWidth(5)},
+      children: [
+        pw.TableRow(
+          decoration: pw.BoxDecoration(color: PdfColors.blueAccent),
+          children: [
+            pw.Padding(padding: const pw.EdgeInsets.all(8)),
+            pw.SizedBox(),
+          ],
+        ),
+        pw.TableRow(
+          decoration: pw.BoxDecoration(color: PdfColors.grey300),
+          children: [
+            pw.Padding(
+              padding: const pw.EdgeInsets.all(8),
+              child: pw.Text(
+                'Campo',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+            pw.Padding(
+              padding: const pw.EdgeInsets.all(8),
+              child: pw.Text(
+                'Dado',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        _buildRow('Nome', pet.name),
+        _buildRow('Espécie', pet.type),
+        _buildRow('Raça', pet.breed),
+        _buildRow('Data de Nascimento', pet.dateOfBirth),
+      ],
+    );
+  }
+
+  pw.Widget VaccinesTableInfo(List<Vaccine> vaccines) {
+    return pw.Table(
+      border: pw.TableBorder.all(color: PdfColors.grey),
+      columnWidths: const {
+        0: pw.FlexColumnWidth(3),
+        1: pw.FlexColumnWidth(3),
+        2: pw.FlexColumnWidth(3),
+      },
+      children: [
+        pw.TableRow(
+          decoration: pw.BoxDecoration(color: PdfColors.blueAccent),
+          children: [
+            pw.Padding(
+              padding: const pw.EdgeInsets.all(8),
+              child: pw.Text(
+                "VACINAS",
+                style: pw.TextStyle(
+                  color: PdfColors.white,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+            ),
+            pw.SizedBox(),
+            pw.SizedBox(),
+          ],
+        ),
+        pw.TableRow(
+          decoration: pw.BoxDecoration(color: PdfColors.grey300),
+          children: [
+            pw.Padding(
+              padding: const pw.EdgeInsets.all(8),
+              child: pw.Text(
+                "Nome",
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+            pw.Padding(
+              padding: const pw.EdgeInsets.all(8),
+              child: pw.Text(
+                "Data de Aplicação",
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+            pw.Padding(
+              padding: const pw.EdgeInsets.all(8),
+              child: pw.Text(
+                "Próxima Dose",
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        ...vaccines.map((v) {
+          final date = DateParser.parseDate(v.dateApplication);
+          final formattedDate = date != null
+              ? DateParser.formatDate(date)
+              : 'Data inválida';
+
+          final nextDate = DateParser.parseDate(v.nextDateApplication);
+          final formattedNextDate = nextDate != null
+              ? DateParser.formatDate(nextDate)
+              : 'Não disponível';
+
+          return pw.TableRow(
+            children: [
+              pw.Padding(
+                padding: const pw.EdgeInsets.all(8),
+                child: pw.Text(v.name),
+              ),
+              pw.Padding(
+                padding: const pw.EdgeInsets.all(8),
+                child: pw.Text(formattedDate),
+              ),
+              pw.Padding(
+                padding: const pw.EdgeInsets.all(8),
+                child: pw.Text(formattedNextDate),
+              ),
+            ],
+          );
+        }).toList(),
+      ],
+    );
+  }
+
+  pw.Widget EventsTableInfo(List<Event> events) {
+    return pw.Table(
+      border: pw.TableBorder.all(color: PdfColors.grey),
+      columnWidths: const {
+        0: pw.FlexColumnWidth(3),
+        1: pw.FlexColumnWidth(3),
+        2: pw.FlexColumnWidth(4),
+      },
+      children: [
+        pw.TableRow(
+          decoration: pw.BoxDecoration(color: PdfColors.blueAccent),
+          children: [
+            pw.Padding(
+              padding: const pw.EdgeInsets.all(8),
+              child: pw.Text(
+                'EVENTOS',
+                style: pw.TextStyle(
+                  color: PdfColors.white,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+            ),
+            pw.SizedBox(),
+            pw.SizedBox(),
+          ],
+        ),
+        pw.TableRow(
+          decoration: pw.BoxDecoration(color: PdfColors.grey300),
+          children: [
+            pw.Padding(
+              padding: const pw.EdgeInsets.all(8),
+              child: pw.Text(
+                'Tipo',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+            pw.Padding(
+              padding: const pw.EdgeInsets.all(8),
+              child: pw.Text(
+                'Data',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+            pw.Padding(
+              padding: const pw.EdgeInsets.all(8),
+              child: pw.Text(
+                'Observação',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        ...events.map((e) {
+          final eventDate = DateParser.parseDate(e.date);
+          final formattedDate = eventDate != null
+              ? DateParser.formatDate(eventDate)
+              : 'Data inválida';
+
+          final observacao =
+              (e.observation?.trim().isNotEmpty == true &&
+                  e.observation != 'null')
+              ? e.observation!
+              : 'Não informado.';
+
+          return pw.TableRow(
+            children: [
+              pw.Padding(
+                padding: const pw.EdgeInsets.all(8),
+                child: pw.Text(e.type),
+              ),
+              pw.Padding(
+                padding: const pw.EdgeInsets.all(8),
+                child: pw.Text(formattedDate),
+              ),
+              pw.Padding(
+                padding: const pw.EdgeInsets.all(8),
+                child: pw.Text(observacao),
+              ),
+            ],
+          );
+        }).toList(),
+      ],
+    );
+  }
+
+  pw.TableRow _buildRow(String label, String value) {
+    return pw.TableRow(
+      children: [
+        pw.Padding(padding: const pw.EdgeInsets.all(8), child: pw.Text(label)),
+        pw.Padding(padding: const pw.EdgeInsets.all(8), child: pw.Text(value)),
+      ],
+    );
+  }
+
   Future<Uint8List> _generatePdf(PdfPageFormat format) async {
     final pdf = pw.Document();
+
+    final petImage = pw.MemoryImage(
+      (await rootBundle.load(
+        'assets/images/pets_icone_teste.jpg',
+      )).buffer.asUint8List(),
+    );
 
     pdf.addPage(
       pw.MultiPage(
@@ -108,56 +333,30 @@ class _ReportPageState extends State<ReportPage> {
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
+                      pw.Center(
+                        child: pw.ClipOval(
+                          child: pw.SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: pw.Image(petImage, fit: pw.BoxFit.cover),
+                          ),
+                        ),
+                      ),
+                      pw.SizedBox(height: 20),
                       pw.Text(
-                        "Pet: ${pet.name} (${pet.type} - ${pet.breed})",
+                        "INFORMAÇÕES DO PET",
                         style: pw.TextStyle(
-                          fontSize: 18,
+                          fontSize: 24,
                           fontWeight: pw.FontWeight.bold,
                           color: PdfColors.blueAccent,
                         ),
                       ),
-                      pw.Divider(
-                        height: 20,
-                        thickness: 1,
-                        color: PdfColors.grey,
-                      ),
+                      PetTableInfo(pet),
+                      pw.SizedBox(height: 20),
+
                       if (vaccines.isNotEmpty) ...[
-                        pw.Text(
-                          "Vacinas:",
-                          style: pw.TextStyle(
-                            fontSize: 16,
-                            fontWeight: pw.FontWeight.bold,
-                          ),
-                        ),
-                        ...vaccines.map((v) {
-                          final dateApplication = DateParser.parseDate(
-                            v.dateApplication,
-                          );
-                          final formattedDateApplication =
-                              dateApplication != null
-                              ? DateParser.formatDate(dateApplication)
-                              : "Data Inválida";
-
-                          final nextDateApplication = DateParser.parseDate(
-                            v.nextDateApplication,
-                          );
-                          final formattedNextDateApplication =
-                              nextDateApplication != null
-                              ? DateParser.formatDate(nextDateApplication)
-                              : "Data Inválida";
-
-                          return pw.Padding(
-                            padding: const pw.EdgeInsets.only(
-                              left: 8.0,
-                              top: 4.0,
-                            ),
-                            child: pw.Text(
-                              "- ${v.name} (Aplicada: $formattedDateApplication, Próxima: $formattedNextDateApplication)",
-                              style: const pw.TextStyle(fontSize: 14),
-                            ),
-                          );
-                        }),
-                        pw.SizedBox(height: 10),
+                        VaccinesTableInfo(vaccines),
+                        pw.SizedBox(height: 20),
                       ] else ...[
                         pw.Text(
                           "Vacinas: Nenhuma vacina cadastrada!",
@@ -167,32 +366,10 @@ class _ReportPageState extends State<ReportPage> {
                           ),
                         ),
                       ],
-                      pw.SizedBox(height: 10),
+
                       if (events.isNotEmpty) ...[
-                        pw.Text(
-                          "Eventos:",
-                          style: pw.TextStyle(
-                            fontSize: 16,
-                            fontWeight: pw.FontWeight.bold,
-                          ),
-                        ),
-                        ...events.map((e) {
-                          final eventDate = DateParser.parseDate(e.date);
-                          final formattedEventDate = eventDate != null
-                              ? DateParser.formatDate(eventDate)
-                              : "Data Inválida";
-                          return pw.Padding(
-                            padding: const pw.EdgeInsets.only(
-                              left: 8.0,
-                              top: 4.0,
-                            ),
-                            child: pw.Text(
-                              "- ${e.type} (Data: $formattedEventDate, Obs: ${e.observation ?? 'N/A'})",
-                              style: const pw.TextStyle(fontSize: 14),
-                            ),
-                          );
-                        }),
-                        pw.SizedBox(height: 10),
+                        EventsTableInfo(events),
+                        pw.SizedBox(height: 20),
                       ] else ...[
                         pw.Text(
                           "Eventos: Nenhum evento cadastrado!",
