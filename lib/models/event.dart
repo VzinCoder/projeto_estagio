@@ -9,7 +9,7 @@ class Event {
   String id;
   String type;
   String date;
-  String observation;
+  String? observation;
   String petId;
   late String updatedAt;
 

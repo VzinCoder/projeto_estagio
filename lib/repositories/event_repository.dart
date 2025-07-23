@@ -33,7 +33,6 @@ class EventRepository implements IEventRepository {
 
   @override
   Future<int> updateEvent(Event event) {
-
     // impossivel um evento não ter id.
     // if (event.id == null) {
     //   throw Exception("Cannot update event without ID");
@@ -51,7 +50,7 @@ class EventRepository implements IEventRepository {
   Future<List<Event>> getEventsByPetId(String petId) async {
     final result = await db.query(
       'events',
-      where: 'pet_id = ?',
+      where: 'animal_id = ?',
       whereArgs: [petId],
     );
     return result.map((map) => Event.fromMap(map)).toList();
